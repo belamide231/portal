@@ -902,23 +902,7 @@ COMMIT;
 START TRANSACTION;
 
 -- PARAMETERS [14]
-/* 1 */
 SET @group_id = NULL;
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6');
-SET @post_text = '';
-SET @is_important = TRUE;
-/* 2 */
-SET @group_id = NULL;
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student1');
-SET @post_text = '';
-SET @is_important = TRUE;
-/* 3 */
-SET @group_id = 1;
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student10');
-SET @post_text = '';
-SET @is_important = TRUE;
-/* 4 */
-SET @group_id = 1;
 SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6');
 SET @post_text = '';
 SET @is_important = TRUE;
