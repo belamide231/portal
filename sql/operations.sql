@@ -17,7 +17,7 @@ DELETE FROM tbl_group_membership_requests;
 /* NO: [1]
  * GROUP/CREATING_GROUP
  * When an admin/instructor creates a group. 
- * group's author's perspective. *clicks notification* navigates: "group/:groupId"
+ * group's author's perspective. *clicks notification* navigates: 'group/:groupId'
  * */
 DESCRIBE tbl_groups;
 DESCRIBE tbl_group_members;
@@ -39,9 +39,9 @@ COMMIT;
 START TRANSACTION;
 
 -- PARAMETERS [1]
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = "admin" LIMIT 1);
-SET @group_type = "class";
-SET @group_name = "FREE ELEC 3";
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'admin' LIMIT 1);
+SET @group_type = 'class';
+SET @group_name = 'FREE ELEC 3';
 
 -- SQL [1]
 INSERT INTO tbl_groups(group_type, author_id, group_name) 
@@ -52,20 +52,21 @@ SELECT
 
 SET @group_id = LAST_INSERT_ID();
 
-INSERT INTO tbl_group_members(group_id, member_id, group_role)
+INSERT INTO tbl_group_members(group_id, member_id, group_role, is_group_moderator)
 SELECT 
 	@group_id group_id,
 	@user_id member_id, 
-	"group_author" group_role
+	'group_author' group_role,
+    TRUE is_group_moderator
 WHERE NOT EXISTS (
 	SELECT TRUE FROM tbl_group_members WHERE group_id = @group_id AND member_id = @user_id
 );
 
 INSERT INTO tbl_users_notification(notification_text, notification_type, target_url, group_id)
 SELECT 
-	CONCAT(group_type, " ", group_name, " successfully created") notification_text,
-	"CREATED_GROUP" notification_type,
-	CONCAT("group", "/", @group_id) target_url,
+	CONCAT(group_type, ' ', group_name, ' successfully created') notification_text,
+	'CREATED_GROUP' notification_type,
+	CONCAT('group', '/', @group_id) target_url,
 	@group_id group_id
 FROM tbl_groups
 WHERE group_id = @group_id;
@@ -86,7 +87,7 @@ WHERE user_id = @user_id;
 /* NO: [2] 
  * GROUP/INVITING_USERS_IN_GROUP
  * When an admin/instructor invites users to join the group.
- * invited user's perspective. *clicks notification* navigates: "group/:groupId"
+ * invited user's perspective. *clicks notification* navigates: 'group/:groupId'
  * */
 DESCRIBE tbl_group_membership_requests;
 DESCRIBE tbl_users_notification;
@@ -101,14 +102,14 @@ START TRANSACTION;
 
 -- PARAMETERS [2]
 SET @candidates_id = CONCAT(
-	(SELECT user_id FROM tbl_users_account WHERE username = "student3" LIMIT 1), 
-	" * , \n ", 
-	(SELECT user_id FROM tbl_users_account WHERE username = "student2" LIMIT 1),
-	"              ", 
-	(SELECT user_id FROM tbl_users_account WHERE username = "student1" LIMIT 1)
+	(SELECT user_id FROM tbl_users_account WHERE username = 'student3' LIMIT 1), 
+	' * , \n ', 
+	(SELECT user_id FROM tbl_users_account WHERE username = 'student2' LIMIT 1),
+	'              ', 
+	(SELECT user_id FROM tbl_users_account WHERE username = 'student1' LIMIT 1)
 );
-SET @group_id = (SELECT group_id FROM tbl_groups WHERE group_name = "FREE ELEC 3" LIMIT 1);
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = "admin" LIMIT 1);
+SET @group_id = (SELECT group_id FROM tbl_groups WHERE group_name = 'FREE ELEC 3' LIMIT 1);
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'admin' LIMIT 1);
 
 -- SQL [2]
 INSERT INTO tbl_group_membership_requests(group_id, candidate_id, referrer_id, origin)
@@ -129,7 +130,7 @@ FROM (
 	    FROM recursion
 	    WHERE remaining != element AND remaining != ''
 	)
-	SELECT @group_id group_id, element candidate_id, "invited" origin FROM recursion
+	SELECT @group_id group_id, element candidate_id, 'invited' origin FROM recursion
 ) ft
 WHERE ft.candidate_id NOT IN (
 	SELECT 
@@ -142,13 +143,13 @@ SET @starting_membership_id = LAST_INSERT_ID() - ROW_COUNT();
 
 INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, membership_id, group_id)
 SELECT 
-	@user_id 																																						sender_id,
-	t1.candidate_id 																																		recipient,
-	CONCAT(t3.full_name, " invited you to join ", t2.group_type, " ", t2.group_name) 		notification_text,
-	"PENDING_GROUP_INVITATION" 																													notification_type,
-	CONCAT("group", "/", @group_id) 																										target_url,
-	t1.membership_id 																																		membership_id,
-	@group_id 																																					group_id
+    @user_id 																					sender_id,
+	t1.candidate_id 																			recipient,
+	CONCAT(t3.full_name, ' invited you to join ', t2.group_type, ' ', t2.group_name) 		    notification_text,
+	'PENDING_GROUP_INVITATION' 																	notification_type,
+	CONCAT('group', '/', @group_id) 															target_url,
+	t1.membership_id 																			membership_id,
+	@group_id 																					group_id
 FROM tbl_group_membership_requests t1
 JOIN tbl_groups t2
 	ON t1.group_id = t2.group_id
@@ -179,7 +180,7 @@ WHERE t1.notification_id > @starting_notification_id;
 /* NO: [3]
  * GROUP/REQUESTING_JOIN_GROUP 
  * When a user sends a request join to the group.
- * group's author's/moderator's perspective. *clicks notification* navigates: "group/:groupId/pending-members/search?membershipId=5"
+ * group's author's/moderator's perspective. *clicks notification* navigates: 'group/:groupId/pending-members/search?membershipId=5'
  * */
 DESCRIBE tbl_group_membership_requests;
 DESCRIBE tbl_users_notification;
@@ -191,38 +192,39 @@ SELECT * FROM tbl_users_notification ORDER BY notification_stamp DESC;
 SELECT * FROM tbl_group_members ORDER BY join_stamp DESC;
 SELECT * FROM tbl_groups ORDER BY group_created_stamp DESC;
 
-INSERT INTO tbl_group_members (group_id, member_id, group_role)
+INSERT INTO tbl_group_members (group_id, member_id, group_role, is_group_moderator)
 SELECT 
 	t2.group_id group_id, 
 	t1.user_id member_id,
-	"group_moderator" group_role
+	'group_member' group_role,
+    TRUE is_group_moderator
 FROM tbl_users_account t1
 JOIN tbl_groups t2
-	ON t1.username = "student10" 
-	AND t2.group_name = "FREE ELEC 3";
+	ON t1.username = 'student10' 
+	AND t2.group_name = 'FREE ELEC 3';
 
 UPDATE tbl_groups 
-SET join_policy = "request_join" 
-WHERE group_name = "FREE ELEC 3";
+SET join_policy = 'request_join' 
+WHERE group_name = 'FREE ELEC 3';
 
 ROLLBACK;
 COMMIT;
 START TRANSACTION;
 
 -- PARAMETERS [3]
-SET @group_id = (SELECT group_id FROM tbl_groups WHERE group_name = "FREE ELEC 3" LIMIT 1);
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = "student6" LIMIT 1);
+SET @group_id = (SELECT group_id FROM tbl_groups WHERE group_name = 'FREE ELEC 3' LIMIT 1);
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6' LIMIT 1);
 
 -- SQL [3]
 INSERT INTO tbl_group_membership_requests(group_id, candidate_id, origin)
 SELECT
 	@group_id 				group_id, 
 	@user_id 					candidate_id,
-	"request_join" 		origin
+	'request_join' 		origin
 WHERE NOT EXISTS(
 	SELECT 1 FROM tbl_group_membership_requests WHERE group_id = @group_id AND candidate_id = @user_id	
 ) AND EXISTS (
-	SELECT TRUE FROM tbl_groups WHERE group_id = @group_id AND join_policy = "request_join"
+	SELECT TRUE FROM tbl_groups WHERE group_id = @group_id AND join_policy = 'request_join'
 );
 
 SET @membership_id = LAST_INSERT_ID();
@@ -234,16 +236,16 @@ SELECT
 WHERE NOT EXISTS (
 	SELECT TRUE FROM tbl_group_members WHERE group_id = @group_id AND member_id = @user_id
 ) AND EXISTS (
-	SELECT TRUE FROM tbl_groups WHERE group_id = @group_id AND join_policy = "open"
+	SELECT TRUE FROM tbl_groups WHERE group_id = @group_id AND join_policy = 'open'
 );
 
 INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, membership_id, group_id)
 SELECT 
 	@user_id 																																															user_id,
 	t1.member_id 																																													recipient_id,
-	CONCAT(t2.full_name, " requested to join ", t3.group_type, " ", t3.group_name) 												notification_text,
-	"REQUESTING_GROUP_JOIN" 																																							notification_type,
-	CONCAT("group", "/", @group_id, "/", "pending-members", "/search?", "full_name", "=", t2.full_name) 	target_url,
+	CONCAT(t2.full_name, ' requested to join ', t3.group_type, ' ', t3.group_name) 												notification_text,
+	'REQUESTING_GROUP_JOIN' 																																							notification_type,
+	CONCAT('group', '/', @group_id, '/', 'pending-members', '/search?', 'full_name', '=', t2.full_name) 	target_url,
 	@membership_id 																																												membership_id,
 	@group_id 																																														group_id
 FROM tbl_group_members t1
@@ -252,9 +254,9 @@ JOIN tbl_users_profile t2
 JOIN tbl_groups t3
 	ON t3.group_id = @group_id
 WHERE t1.group_id = @group_id
-AND t1.group_role IN ("group_author", "group_moderator")
+AND t1.is_group_moderator IS TRUE
 AND EXISTS (
-	SELECT TRUE FROM tbl_groups WHERE group_id = @group_id AND join_policy = "request_join"
+	SELECT TRUE FROM tbl_groups WHERE group_id = @group_id AND join_policy = 'request_join'
 );
 
 SET @starting_notification_id = LAST_INSERT_ID() - ROW_COUNT();
@@ -267,7 +269,7 @@ FROM tbl_users_notification t1
 JOIN tbl_users_connection t2
 	ON t1.recipient_id = t2.user_id
 WHERE EXISTS (
-	SELECT TRUE FROM tbl_groups WHERE group_id = @group_id AND join_policy = "request_join"
+	SELECT TRUE FROM tbl_groups WHERE group_id = @group_id AND join_policy = 'request_join'
 )
 AND t1.notification_id > @starting_notification_id;
 	
@@ -282,7 +284,7 @@ AND t1.notification_id > @starting_notification_id;
 /* NO: [4]
  * GROUP/ACCEPTING_GROUP_REQUEST_JOIN 
  * When an admin/instructor accepts user's request on joining group.
- * user's perspective. *clicks notification* navigates: "group/:groupId"
+ * user's perspective. *clicks notification* navigates: 'group/:groupId'
  * */
 DESCRIBE tbl_group_membership_requests;
 DESCRIBE tbl_users_notification;
@@ -297,15 +299,15 @@ COMMIT;
 START TRANSACTION;
 
 -- PARAMETERS
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE ROLE = "admin");
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE ROLE = 'admin');
 SET @membership_id = (
 	SELECT 
 		membership_id
 	FROM tbl_group_membership_requests t1 
 	JOIN tbl_users_account t2
 		ON t1.candidate_id = t2.user_id
-	WHERE t2.username = "student6"
-	AND t1.origin = "request_join"
+	WHERE t2.username = 'student6'
+	AND t1.origin = 'request_join'
 );
 
 -- SQL
@@ -330,9 +332,9 @@ INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, n
 SELECT 
 	@user_id sender_id,
 	t1.candidate_id recipient_id,
-	CONCAT(t2.full_name, " accepted your request to join ", t3.group_type, " ", t3.group_name) notification_text,
-	"ACCEPTED_GROUP_JOIN" notification_type,
-	CONCAT("group", "/", t1.group_id) target_url,
+	CONCAT(t2.full_name, ' accepted your request to join ', t3.group_type, ' ', t3.group_name) notification_text,
+	'ACCEPTED_GROUP_JOIN' notification_type,
+	CONCAT('group', '/', t1.group_id) target_url,
 	t1.group_id group_id
 FROM tbl_group_membership_requests t1
 JOIN tbl_users_profile t2
@@ -361,7 +363,7 @@ WHERE t1.notification_id = LAST_INSERT_ID();
 /* NO: [5]
  * GROUP/ACCEPTING_GROUP_INVITATION
  * When a user accepts author's/moderator's group invitation.
- * author's perspective. *clicks notification* navigates: "group/:groupId/members/search?full_name=student3"
+ * author's perspective. *clicks notification* navigates: 'group/:groupId/members/search?full_name=student3'
  * */
 DESCRIBE tbl_users_notification;
 DESCRIBE tbl_groups;
@@ -384,8 +386,8 @@ SET @membership_id = (
 	FROM tbl_group_membership_requests t1
 	JOIN tbl_users_account t2
 		ON t1.candidate_id = t2.user_id
-	WHERE t2.username = "student2"
-	AND t1.origin = "invited"
+	WHERE t2.username = 'student2'
+	AND t1.origin = 'invited'
 	LIMIT 1
 );
 
@@ -422,9 +424,9 @@ INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, n
 SELECT
 	@candidate_id sender_id,
 	@referrer_id recipient_id,
-	CONCAT(full_name, " accepted your group invitation") notification_text,
-	"ACCEPTED_GROUP_INVITATION" notification_type,
-	CONCAT("group", "/", @group_id, "/", "members", "/search?", "full_name", "=", full_name) target_url,
+	CONCAT(full_name, ' accepted your group invitation') notification_text,
+	'ACCEPTED_GROUP_INVITATION' notification_type,
+	CONCAT('group', '/', @group_id, '/', 'members', '/search?', 'full_name', '=', full_name) target_url,
 	@group_id group_id
 FROM tbl_users_profile
 WHERE @candidate_id = user_id;
@@ -510,11 +512,11 @@ START TRANSACTION;
 ROLLBACK;
 
 -- PARAMETERS [8]
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = "student6" LIMIT 1);
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6' LIMIT 1);
 SET @group_id = 2;
 
 -- SQL [8]
-DELETE FROM tbl_group_membership_requests WHERE group_id = @group_id AND candidate_id = @user_id AND origin = "request_join";
+DELETE FROM tbl_group_membership_requests WHERE group_id = @group_id AND candidate_id = @user_id AND origin = 'request_join';
 
 /******************************************************************************************/
 /******************************************************************************************/
@@ -565,7 +567,7 @@ START TRANSACTION;
 
 -- PARAMETERS [10]
 SET @group_id = 3;
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = "student10");
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student10');
 
 -- SQL [10]
 DELETE FROM tbl_users_notification WHERE recipient_id = @user_id AND group_id = @group_id;
@@ -581,7 +583,7 @@ DELETE FROM tbl_group_members WHERE group_id = @group_id AND member_id = @user_i
 /* NO: [11]
  * GROUP/KICKING_MEMBERS
  * When an author/moderator kicks a member in the group.
- * user's perspective. *clicks notification* navigates: "group/:groupId"
+ * user's perspective. *clicks notification* navigates: 'group/:groupId'
  * */
 DESCRIBE tbl_groups;
 DESCRIBE tbl_group_members;
@@ -598,9 +600,9 @@ START TRANSACTION;
 DESCRIBE tbl_group_members;
 
 -- PARAMETERS [11]
-SET @group_id = (SELECT group_id FROM tbl_groups WHERE group_name = "FREE ELEC 3" LIMIT 1);
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = "admin");
-SET @members_id = "bfeeb8db-4527-11f1-a263-e4b97aea4dc2 bfeec03d-4527-11f1-a263-e4b97aea4dc2";
+SET @group_id = (SELECT group_id FROM tbl_groups WHERE group_name = 'FREE ELEC 3' LIMIT 1);
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'admin');
+SET @members_id = 'bfeeb8db-4527-11f1-a263-e4b97aea4dc2 bfeec03d-4527-11f1-a263-e4b97aea4dc2';
 
 -- SQL [11]
 DELETE FROM tbl_users_notification WHERE recipient_id IN (
@@ -641,16 +643,16 @@ WITH RECURSIVE recursion AS (
 SELECT 
 	@user_id sender_id,
 	ELEMENT recipient_id,
-	CONCAT(t2.full_name, " kicked you out from ", t3.group_type, " ", t3.group_name) notification_text,
-	"KICKED_YOU" notification_type,
-	CONCAT("group", "/", @group_id) target_url,
+	CONCAT(t2.full_name, ' kicked you out from ', t3.group_type, ' ', t3.group_name) notification_text,
+	'KICKED_YOU' notification_type,
+	CONCAT('group', '/', @group_id) target_url,
 	@group_id group_id
 FROM recursion t1
 JOIN tbl_users_profile t2
 	ON t2.user_id = @user_id
 JOIN tbl_groups t3
 	ON t3.group_id = @group_id
-WHERE (SELECT join_policy FROM tbl_groups WHERE group_id = @group_id) != "open"
+WHERE (SELECT join_policy FROM tbl_groups WHERE group_id = @group_id) != 'open'
 AND ELEMENT != @user_id
 AND ELEMENT IN (
 	SELECT 
@@ -698,7 +700,7 @@ WHERE t1.notification_id > @starting_notification_id;
 /* NO: [12]
  * GROUP/EDITING_GROUP
  * When an author edits group.
- * member's perspective. *clicks notification* navigates: "group/:groupId"
+ * member's perspective. *clicks notification* navigates: 'group/:groupId'
  * */
 
 DESCRIBE tbl_groups;
@@ -711,12 +713,12 @@ START TRANSACTION;
 ROLLBACK;
 
 -- PARAMETERS [12]
-SET @user_id = "3849a541-4194-11f1-a263-e4b97aea4dc2";
+SET @user_id = '3849a541-4194-11f1-a263-e4b97aea4dc2';
 SET @group_id = 3;
-SET @join_policy = "request_join";
-SET @post_policy = "everyone";
-SET @group_name = "FREE ELEC 3";
-SET @group_description = "";
+SET @join_policy = 'request_join';
+SET @post_policy = 'everyone';
+SET @group_name = 'FREE ELEC 3';
+SET @group_description = '';
 
 -- SQL [12]
 DELETE t1
@@ -724,7 +726,7 @@ FROM tbl_users_notification t1
 JOIN tbl_groups t2
 	ON t1.group_id = t2.group_id
 WHERE t1.group_id = @group_id 
-AND t1.notification_type = "UPDATED_GROUP"
+AND t1.notification_type = 'UPDATED_GROUP'
 AND (t2.group_name != @group_name OR t2.group_description != @group_desciption);
 
 INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, group_id)
@@ -732,11 +734,11 @@ SELECT
 	@user_id sender_id,
 	t1.member_id recipient_id,
 	CASE 
-		WHEN t1.member_id = t2.author_id THEN CONCAT("you just updated the ", t2.group_type, " ", t2.group_name)
-		ELSE CONCAT(t3.full_name, " updated the ", t2.group_type, " ", t2.group_name)
+		WHEN t1.member_id = t2.author_id THEN CONCAT('you just updated the ', t2.group_type, ' ', t2.group_name)
+		ELSE CONCAT(t3.full_name, ' updated the ', t2.group_type, ' ', t2.group_name)
 	END notification_text,
-	"UPDATED_GROUP" notification_type,
-	CONCAT("group", "/", @group_id) target_url,
+	'UPDATED_GROUP' notification_type,
+	CONCAT('group', '/', @group_id) target_url,
 	@group_id group_id
 FROM tbl_group_members t1
 JOIN tbl_groups t2
@@ -760,7 +762,7 @@ WHERE group_id = @group_id;
 /* NO: [13]
  * GROUP/CHANGING_MEMBER_ROLE
  * When an author updates a member's role.
- * member's perspective. *clicks notification* navigates: "group/:groupId"
+ * member's perspective. *clicks notification* navigates: 'group/:groupId'
  * */
 DESCRIBE tbl_group_members;
 DESCRIBE tbl_users_notification;
@@ -773,10 +775,10 @@ COMMIT;
 START TRANSACTION;
 
 -- PARAMETERS [13]
-SET @group_id = (SELECT group_id FROM tbl_groups WHERE group_name = "FREE ELEC 3" LIMIT 1);
-SET @user_id = "bff029ff-4527-11f1-a263-e4b97aea4dc2";
-SET @members_id = "bfeeb8db-4527-11f1-a263-e4b97aea4dc2 bfeec03d-4527-11f1-a263-e4b97aea4dc2";
-SET @role = "group_moderator";
+SET @group_id = (SELECT group_id FROM tbl_groups WHERE group_name = 'FREE ELEC 3' LIMIT 1);
+SET @user_id = 'bff029ff-4527-11f1-a263-e4b97aea4dc2';
+SET @members_id = 'bfeeb8db-4527-11f1-a263-e4b97aea4dc2 bfeec03d-4527-11f1-a263-e4b97aea4dc2';
+SET @is_group_moderator = TRUE;
 
 -- SQL [13]
 DELETE t1
@@ -802,7 +804,7 @@ JOIN (
 JOIN tbl_group_members t3
 	ON t2.ELEMENT = t3.member_id
 WHERE t3.group_id = @group_id
-AND t3.group_role != @role;
+AND t3.is_group_moderator != @is_group_moderator;
 
 INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, group_id)
 WITH RECURSIVE recursion AS (
@@ -819,9 +821,9 @@ WITH RECURSIVE recursion AS (
 SELECT 
 	@user_id sender_id,
 	t1.ELEMENT recipient_id,
-	CONCAT(t2.full_name, " updated your role in ", t5.group_type, " ", t5.group_name) notification_text,
-	"UPDATED_ROLE" notification_type,
-	CONCAT("group", "/", @group_id, "/", "members", "/search?", "full_name", "=", t3.full_name) target_url,
+	CONCAT(t2.full_name, ' made you a group moderator in ', t5.group_type, ' ', t5.group_name) notification_text,
+	'TURNED_GROUP_MODERATOR' notification_type,
+	CONCAT('group', '/', @group_id, '/', 'members', '/search?', 'full_name', '=', t3.full_name) target_url,
 	@group_id group_id
 FROM recursion t1
 JOIN tbl_users_profile t2
@@ -833,7 +835,7 @@ JOIN tbl_group_members t4
 JOIN tbl_groups t5
 	ON t5.group_id = @group_id
 WHERE t1.ELEMENT != @user_id
-AND t4.group_role != @role;
+AND t4.is_group_moderator != @is_group_moderator;
 
 SET @starting_notification_id = LAST_INSERT_ID() - ROW_COUNT();
 
@@ -856,9 +858,9 @@ JOIN (
 	WHERE ELEMENT != @user_id
 ) t2
 	ON t1.member_id = t2.ELEMENT
-SET group_role = @role
+SET t1.is_group_moderator = @is_group_moderator
 WHERE t1.group_id = @group_id
-AND t1.group_role != @role;
+AND t1.is_group_moderator != @is_group_moderator;
 
 SELECT 
 	t1.notification_id notification_id,
@@ -876,53 +878,145 @@ WHERE t1.notification_id > @starting_notification_id;
 /******************************************************************************************/
 /******************************************************************************************/
 /******************************************************************************************/
-/* NO: [13]
+/* NO: [14]
  * CREATING_POST
  * When an admin/instructor/author/student/member creates a post.
- * moderator/author/admin's perspective. *clicks notification* navigates: "group/:groupId"
+ * moderator/author/admin's perspective. *clicks notification* navigates: 'group/:groupId'
  * */
 
 DESCRIBE tbl_posts;
 DESCRIBE tbl_users_notification;
 
 SELECT * FROM tbl_posts;
+SELECT * FROM tbl_users_notification t1 JOIN tbl_users_account t2 ON t1.recipient_id = t2.user_id;
 SELECT * FROM tbl_users_account;
-SELECT * FROM tbl_users_notification;
 SELECT * FROM tbl_portal_policy;
+SELECT * FROM tbl_groups;
+SELECT t2.username, t1.is_group_moderator FROM tbl_group_members t1 JOIN tbl_users_account t2 ON t1.member_id = t2.user_id;
+
+DELETE FROM tbl_users_notification;
+DELETE FROM tbl_posts;
 
 ROLLBACK;
--- COMMIT;
--- START TRANSACTION;
+COMMIT;
+START TRANSACTION;
 
--- PARAMETERS
+-- PARAMETERS [14]
+/* 1 */
 SET @group_id = NULL;
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = "student1");
-SET @post_text = "";
-SET @is_important = FALSE;
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6');
+SET @post_text = '';
+SET @is_important = TRUE;
+/* 2 */
+SET @group_id = NULL;
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student1');
+SET @post_text = '';
+SET @is_important = TRUE;
+/* 3 */
+SET @group_id = 1;
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student10');
+SET @post_text = '';
+SET @is_important = TRUE;
+/* 4 */
+SET @group_id = 1;
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6');
+SET @post_text = '';
+SET @is_important = TRUE;
 
--- SQL
-SHOW FULL COLUMNS FROM tbl_posts;
-SHOW FULL COLUMNS FROM tbl_portal_policy;
-
-SELECT * FROM tbl_users_account WHERE user_id = @user_id;
-
-SELECT * FROM tbl_portal_policy;
-
+-- SQL [14]
 INSERT INTO tbl_posts(group_id, author_id, post_text, is_important, post_status)
-SELECT 
+SELECT
 	@group_id group_id,
 	@user_id author_id,
 	@post_text post_text,
 	@is_important is_important,
 	CASE
-		WHEN t1.post_policy = "public" THEN "posted" -- no notification
-		WHEN t1.post_policy = "moderated" AND t2.ROLE = "student" AND t2.is_moderator = FALSE THEN "pending" -- moderators notified
-		WHEN t1.post_policy = "moderated" AND (t2.ROLE IN ("instructor", "admin") OR t2.is_moderator = TRUE) THEN "posted"
+		WHEN @group_id IS NULL AND t1.post_policy = 'public' THEN 'posted'
+		WHEN @group_id IS NULL AND t1.post_policy = 'moderated' AND t2.ROLE = 'student' AND t2.is_moderator = FALSE THEN 'pending'
+		WHEN @group_id IS NULL AND t1.post_policy = 'moderated' AND (t2.ROLE IN ('instructor', 'admin') OR t2.is_moderator = TRUE) THEN 'posted'
+        WHEN @group_id IS NULL AND t1.post_policy = 'restricted' AND t2.ROLE = 'admin' THEN 'posted'
+        WHEN @group_id IS NOT NULL AND t3.post_policy = 'public' THEN 'posted'
+        WHEN @group_id IS NOT NULL AND t3.post_policy = 'moderated' AND (t4.group_role != 'group_author' AND t4.is_group_moderator = FALSE) THEN 'pending'
+        WHEN @group_id IS NOT NULL AND t3.post_policy = 'moderated' AND (t4.group_role = 'group_author' OR t4.is_group_moderator = TRUE) THEN 'posted'
+        WHEN @group_id IS NOT NULL AND t3.post_policy = 'restricted' AND t4.group_role = 'group_author' THEN 'posted'
+        ELSE 'pending'
 	END post_status
 FROM tbl_portal_policy t1
 JOIN tbl_users_account t2
 	ON t2.user_id = @user_id
+LEFT JOIN tbl_groups t3
+    ON @group_id IS NOT NULL 
+    AND t3.group_id = @group_id
+LEFT JOIN tbl_group_members t4
+    ON @group_id IS NOT NULL
+    AND t4.group_id = @group_id
+    AND t4.member_id = @user_id
 WHERE t1.policy_id = 1;
 
+SET @post_id = LAST_INSERT_ID();
 
-	
+INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, group_id, post_id)
+SELECT 
+    @user_id sender_id,
+    mt.user_id recipient_id,
+    CASE 
+        WHEN @group_id IS NOT NULL AND t3.post_status = 'pending' THEN CONCAT(t1.full_name, ' requested a post approval in ', t2.group_type, ' ', t2.group_name)
+        WHEN @group_id IS NOT NULL AND t3.post_status = 'posted' THEN CONCAT(t1.full_name, ' posted a post in ', t2.group_type, ' ', t2.group_name)
+        WHEN @group_id IS NULL AND t3.post_status = 'pending' THEN CONCAT(t1.full_name, ' requested a post approval')
+        WHEN @group_id IS NULL AND t3.post_status = 'posted' THEN CONCAT(t1.full_name, ' posted a post')
+    END notification_text,
+    CASE 
+        WHEN @group_id IS NOT NULL AND t3.post_status = 'pending' THEN 'REQUESTED_GROUP_POST_APPROVAL'
+        WHEN @group_id IS NOT NULL AND t3.post_status = 'posted' THEN 'POSTED_A_POST'
+        WHEN @group_id IS NULL AND t3.post_status = 'pending' THEN 'REQUESTED_POST_APPROVAL'
+        WHEN @group_id IS NULL AND t3.post_status = 'posted' THEN 'POSTED_A_POST'
+    END notification_type,
+    CASE 
+        WHEN @group_id IS NOT NULL THEN CONCAT('group/', @group_id , '/post/', @post_id)
+        ELSE CONCAT('post/', @post_id)
+    END target_url,
+    @group_id group_id,
+    @post_id post_id
+FROM (
+    SELECT
+        t1.member_id user_id
+    FROM tbl_group_members t1
+    JOIN tbl_posts t2
+        ON t2.post_id = @post_id
+    WHERE (@group_id IS NOT NULL AND t1.group_id = @group_id)
+    AND t1.member_id != @user_id
+    AND (
+        (t1.is_group_moderator = TRUE AND t2.post_status = 'pending') 
+        OR
+        (t2.is_important = TRUE AND t2.post_status = 'posted')
+    )
+    UNION ALL
+    SELECT
+        t1.user_id
+    FROM tbl_users_account t1
+    JOIN tbl_posts t2
+        ON t2.post_id = @post_id
+    WHERE @group_id IS NULL
+    AND t1.user_id != @user_id
+    AND (
+        (t1.is_moderator = TRUE AND t2.post_status = 'pending')
+        OR
+        (t2.is_important = TRUE AND t2.post_status = 'posted')
+    )
+) mt
+LEFT JOIN tbl_users_profile t1
+    ON t1.user_id = @user_id
+LEFT JOIN tbl_groups t2
+    ON t2.group_id = @group_id
+JOIN tbl_posts t3
+    ON t3.post_id = @post_id;
+
+SET @starting_notification_id = LAST_INSERT_ID() - ROW_COUNT();
+
+SELECT 
+    t1.notification_id, 
+    t2.connection_id
+FROM tbl_users_notification t1
+JOIN tbl_users_connection t2
+    ON t1.recipient_id = t2.user_id
+WHERE t1.notification_id > @starting_notification_id;

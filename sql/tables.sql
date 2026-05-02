@@ -7,18 +7,17 @@ USE cec_portal;
 SET FOREIGN_KEY_CHECKS = 0;
 SET FOREIGN_KEY_CHECKS = 1;
 
---TIMOY
-
 -- PORTAL 
 DROP TABLE IF EXISTS tbl_portal_policy;
 CREATE TABLE IF NOT EXISTS tbl_portal_policy (
-	policy_id ENUM("1") NOT NULL DEFAULT "1" UNIQUE,
-	post_policy ENUM("public", "moderated"),
-	group_creation_policy ENUM("everyone", "staff_only") DEFAULT "staff_only" COMMENT "everyone: all role; staff_only: staff/instructor/admin;"
+	policy_id ENUM('1') NOT NULL DEFAULT '1' UNIQUE,
+	post_policy ENUM('public', 'moderated', 'restricted') NOT NULL DEFAULT 'moderated',
+	comment_policy ENUM('public', 'moderated', 'restricted') NOT NULL DEFAULT 'moderated',
+	group_creation_policy ENUM('everyone', 'staff_only') NOT NULL DEFAULT 'staff_only'
 );
 
 INSERT INTO tbl_portal_policy(policy_id, post_policy, group_creation_policy)
-SELECT "1", "moderated", "staff_only";
+SELECT '1', 'moderated', 'staff_only';
 
 -- USERS
 DROP TABLE IF EXISTS tbl_users_account;
@@ -26,7 +25,7 @@ CREATE TABLE IF NOT EXISTS tbl_users_account (
 	user_id VARCHAR(99) PRIMARY KEY DEFAULT (UUID()),
 	username VARCHAR(99) NOT NULL UNIQUE,
 	password VARCHAR(256) NOT NULL,
-	ROLE ENUM("admin", "instructor", "student") NOT NULL,
+	ROLE ENUM('admin', 'instructor', 'student') NOT NULL,
 	is_moderator BOOLEAN DEFAULT FALSE,
 	gmail VARCHAR(99),
 	fail_attempt INT DEFAULT 0,
@@ -39,10 +38,10 @@ CREATE TABLE IF NOT EXISTS tbl_users_profile (
 		FOREIGN KEY (user_id) REFERENCES tbl_users_account(user_id) 
 			ON DELETE CASCADE
 			ON UPDATE CASCADE,
-	full_name VARCHAR(99) NOT NULL DEFAULT "Martin Garix", 
-	student_id VARCHAR(99) NOT NULL DEFAULT "00000000", 
-	course ENUM("BSCRIM", "BSED", "BSDC", "BSHM", "BSIT", "BSTM", "") NOT NULL,
-	profile_picture VARCHAR(9999) NOT NULL DEFAULT ""
+	full_name VARCHAR(99) NOT NULL DEFAULT 'Martin Garix', 
+	student_id VARCHAR(99) NOT NULL DEFAULT '00000000', 
+	course ENUM('BSCRIM', 'BSED', 'BSDC', 'BSHM', 'BSIT', 'BSTM', '') NOT NULL,
+	profile_picture VARCHAR(9999) NOT NULL DEFAULT ''
 ) ENGINE = Innodb;
 
 DROP TABLE IF EXISTS tbl_users_connection;
@@ -83,15 +82,15 @@ DROP TABLE IF EXISTS tbl_groups;
 CREATE TABLE IF NOT EXISTS tbl_groups (
 	group_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	group_created_stamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	group_type ENUM("group", "class") NOT NULL,
-	join_policy ENUM("open", "close", "request_join") NOT NULL DEFAULT "close",
-	post_policy ENUM("public", "moderated", "staff_only", "staff_moderated", "restricted") DEFAULT "restricted" COMMENT "public: everyone; moderated: user req/admin apprv; staff_only: mod/admin; staff_moderated: mod req/admin apprv; restricted: admin only",
+	group_type ENUM('group', 'class') NOT NULL,
+	join_policy ENUM('open', 'close', 'request_join') NOT NULL DEFAULT 'close',
+	post_policy ENUM('public', 'moderated', 'restricted') DEFAULT 'moderated',
 	author_id VARCHAR(99) NOT NULL,
 		FOREIGN KEY (author_id) REFERENCES tbl_users_account(user_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
 	group_name VARCHAR(99) NOT NULL,
-	group_description VARCHAR(999) NOT NULL DEFAULT ""
+	group_description VARCHAR(999) NOT NULL DEFAULT ''
 ) ENGINE = Innodb;
 
 DROP TABLE IF EXISTS tbl_group_members;
@@ -110,7 +109,8 @@ CREATE TABLE IF NOT EXISTS tbl_group_members (
 		FOREIGN KEY (referrer_id) REFERENCES tbl_users_account(user_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	group_role ENUM("group_author", "group_moderator", "group_member") NOT NULL DEFAULT "group_member"
+	group_role ENUM('group_author', 'group_moderator', 'group_member') NOT NULL DEFAULT 'group_member',
+	is_group_moderator BOOLEAN NOT NULL DEFAULT FALSE
 ) ENGINE = Innodb;
 
 DROP TABLE IF EXISTS tbl_group_membership_requests;
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS tbl_group_membership_requests (
 		FOREIGN KEY (candidate_id) REFERENCES tbl_users_account(user_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	origin ENUM("invited", "request_join") NOT NULL,
+	origin ENUM('invited', 'request_join') NOT NULL,
 	origin_stamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP()
 ) ENGINE = Innodb;
 
@@ -145,12 +145,12 @@ CREATE TABLE IF NOT EXISTS tbl_posts (
 		FOREIGN KEY (author_id) REFERENCES tbl_users_account(user_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	post_text VARCHAR(7999) NOT NULL DEFAULT "",
+	post_text VARCHAR(7999) NOT NULL DEFAULT '',
 	is_important BOOLEAN NOT NULL DEFAULT FALSE,
 	like_count INT NOT NULL DEFAULT 0,
 	share_count INT NOT NULL DEFAULT 0,
 	comment_count INT NOT NULL DEFAULT 0,
-	post_status ENUM("pending", "posted") DEFAULT "pending",
+	post_status ENUM('pending', 'posted') DEFAULT 'pending',
 	reviewer_id VARCHAR(99) NULL DEFAULT NULL,
 		FOREIGN KEY (reviewer_id) REFERENCES tbl_users_account(user_id)
 		ON DELETE CASCADE
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS tbl_post_interactions (
 		FOREIGN KEY (user_id) REFERENCES tbl_users_account(user_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	interaction_type ENUM("liked", "commented") NOT NULL
+	interaction_type ENUM('liked', 'commented') NOT NULL
 ) ENGINE = Innodb;
 
 DROP TABLE IF EXISTS tbl_post_comments;
@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS tbl_post_comments (
 		ON UPDATE CASCADE,
 	comment_text VARCHAR(7999),
 	like_count INT NOT NULL DEFAULT 0,
-	comment_status ENUM("pending", "posted"),
+	comment_status ENUM('pending', 'posted'),
 	reviewer_id VARCHAR(99) NULL DEFAULT NULL,
 		FOREIGN KEY (reviewer_id) REFERENCES tbl_users_account(user_id) 
 		ON DELETE CASCADE 
@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS tbl_comment_interactions (
 		FOREIGN KEY (user_id) REFERENCES tbl_users_account(user_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	interaction_type ENUM("liked", "commented") NOT NULL
+	interaction_type ENUM('liked', 'commented') NOT NULL
 ) ENGINE = Innodb;
 
 DROP TABLE IF EXISTS tbl_post_comment_replies;
@@ -269,7 +269,7 @@ CREATE TABLE IF NOT EXISTS tbl_comment_reply_interactions (
 		FOREIGN KEY (user_id) REFERENCES tbl_users_account(user_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	interaction_type ENUM("liked", "commented") NOT NULL
+	interaction_type ENUM('liked', 'commented') NOT NULL
 ) ENGINE = Innodb;
 
 -- POOL
@@ -325,7 +325,7 @@ CREATE TABLE IF NOT EXISTS tbl_pool_votes (
 DROP TABLE IF EXISTS tbl_chat;
 CREATE TABLE IF NOT EXISTS tbl_chat (
 	chat_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	chat_type ENUM("pair", "group") NOT NULL,
+	chat_type ENUM('pair', 'group') NOT NULL,
 	group_id INT NOT NULL,
 		FOREIGN KEY (group_id) REFERENCES tbl_groups(group_id)
 		ON DELETE CASCADE
@@ -395,8 +395,8 @@ CREATE TABLE IF NOT EXISTS tbl_tasks (
 		FOREIGN KEY (group_id) REFERENCES tbl_groups(group_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	task_status ENUM("draft", "scheduled", "published", "closed") NOT NULL DEFAULT "draft",
-	period ENUM("prelim", "mid-term", "semi-finals", "finals") NOT NULL,
+	task_status ENUM('draft', 'scheduled', 'published', 'closed') NOT NULL DEFAULT 'draft',
+	period ENUM('prelim', 'mid-term', 'semi-finals', 'finals') NOT NULL,
 	category_name VARCHAR(99) NOT NULL,
 	created_stamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 	due_stamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
@@ -421,7 +421,7 @@ CREATE TABLE IF NOT EXISTS tbl_task_questions (
 		ON UPDATE CASCADE,
 	duration INT NOT NULL DEFAULT 0,
 	points INT NOT NULL DEFAULT 0,
-	question_type ENUM("true_or_false", "multiple_choices", "identification") NOT NULL,
+	question_type ENUM('true_or_false', 'multiple_choices', 'identification') NOT NULL,
 	question_text VARCHAR(7999),
 	answer VARCHAR(7999)
 ) ENGINE = Innodb;
@@ -467,7 +467,7 @@ CREATE TABLE IF NOT EXISTS tbl_grades (
 		FOREIGN KEY (group_id) REFERENCES tbl_groups(group_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	period ENUM("prelim", "mid-term", "semi-finals", "finals") NOT NULL,
+	period ENUM('prelim', 'mid-term', 'semi-finals', 'finals') NOT NULL,
 	completion DECIMAL NOT NULL DEFAULT 0,
 	gpa DECIMAL NOT NULL DEFAULT 0
 ) ENGINE = Innodb;
@@ -478,7 +478,7 @@ CREATE TABLE IF NOT EXISTS tbl_grade_component (
 		FOREIGN KEY (group_id) REFERENCES tbl_groups(group_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	period ENUM("prelim", "mid-term", "semi-finals", "finals") NOT NULL,
+	period ENUM('prelim', 'mid-term', 'semi-finals', 'finals') NOT NULL,
 	component_name VARCHAR(99) NOT NULL,
 	weight_percentage INT NOT NULL DEFAULT 0
 ) ENGINE = Innodb;
@@ -490,7 +490,7 @@ CREATE TABLE IF NOT EXISTS tbl_grade_academic_records (
 		FOREIGN KEY (group_id) REFERENCES tbl_groups(group_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-	period ENUM("prelim", "mid-term", "semi-finals", "finals") NOT NULL,
+	period ENUM('prelim', 'mid-term', 'semi-finals', 'finals') NOT NULL,
 	component_name VARCHAR(99) NOT NULL,
 	assessment_no VARCHAR(99) NOT NULL,
 	max_score INT NOT NULL DEFAULT 0,
@@ -526,20 +526,24 @@ CREATE TABLE IF NOT EXISTS tbl_users_notification (
 		ON UPDATE CASCADE,
 	notification_text VARCHAR(99) NOT NULL,
 	notification_type ENUM(
-		"CREATED_GROUP",
-		"PENDING_GROUP_INVITATION",
-		"ACCEPTED_GROUP_INVITATION",
-		"REQUESTING_GROUP_JOIN",
-		"ACCEPTED_GROUP_JOIN",
-		"KICKED_YOU",
-		"COMMENTED_POST",
-		"REPLIED_POST",
-		"LIKED_POST",
-		"LIKED_COMMENT",
-		"LIKED_REPLY",
-		"POST_APPROVE",
-		"POSTED_TASK", 
-		"UPDATED_ROLE"
+		'CREATED_GROUP',
+		'PENDING_GROUP_INVITATION',
+		'ACCEPTED_GROUP_INVITATION',
+		'REQUESTING_GROUP_JOIN',
+		'ACCEPTED_GROUP_JOIN',
+		'KICKED_YOU',
+		'COMMENTED_POST',
+		'REPLIED_POST',
+		'LIKED_POST',
+		'LIKED_COMMENT',
+		'LIKED_REPLY',
+		'POST_APPROVE',
+		'POSTED_TASK', 
+		'TURNED_GROUP_MODERATOR',
+		'REQUESTED_POST_APPROVAL',
+		'REQUESTED_GROUP_POST_APPROVAL',
+		'POSTED_A_POST',
+		'POSTED_IN_GROUP'
 	) NOT NULL,
 	target_url VARCHAR(7999) NOT NULL,
 	is_viewed BOOLEAN NOT NULL DEFAULT FALSE,
@@ -581,6 +585,27 @@ CREATE TABLE IF NOT EXISTS tbl_users_notification (
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 ) ENGINE = Innodb;
+
+ALTER TABLE tbl_users_notification MODIFY COLUMN notification_type ENUM(
+	'CREATED_GROUP',
+	'PENDING_GROUP_INVITATION',
+	'ACCEPTED_GROUP_INVITATION',
+	'REQUESTING_GROUP_JOIN',
+	'ACCEPTED_GROUP_JOIN',
+	'KICKED_YOU',
+	'COMMENTED_POST',
+	'REPLIED_POST',
+	'LIKED_POST',
+	'LIKED_COMMENT',
+	'LIKED_REPLY',
+	'POST_APPROVE',
+	'POSTED_TASK',
+	'TURNED_GROUP_MODERATOR',
+	'REQUESTED_POST_APPROVAL',
+	'REQUESTED_GROUP_POST_APPROVAL',
+	'POSTED_A_POST',
+	'POSTED_IN_GROUP'
+) NOT NULL;
 
 DROP TABLE IF EXISTS tbl_users_notification_muted;
 CREATE TABLE IF NOT EXISTS tbl_users_notification_muted (
@@ -628,10 +653,10 @@ SELECT * FROM tbl_users_profile;
 DELETE FROM tbl_users_account;
 DELETE FROM tbl_users_profile;
 
-SET @username = "student";
-SET @password = "$2a$11$eyXlppBlvJwv2fYtWRGa5eV3eCgjVTTZBmKyNs3joGX/b8uV13vPq";
-SET @role = "student";
-SET @gmail = "student";
+SET @username = 'student';
+SET @password = '$2a$11$eyXlppBlvJwv2fYtWRGa5eV3eCgjVTTZBmKyNs3joGX/b8uV13vPq';
+SET @role = 'student';
+SET @gmail = 'student';
 
 INSERT INTO tbl_users_account(username, password, role, gmail)
 WITH RECURSIVE recursion AS (
@@ -645,34 +670,34 @@ SELECT
 	CONCAT(@username, n) username,
 	@password password,
 	@role role,
-	CONCAT(@gmail, n, "@gmail.com") gmail
+	CONCAT(@gmail, n, '@gmail.com') gmail
 FROM recursion;
 
-SET @username = "admin";
-SET @password = "$2a$11$eyXlppBlvJwv2fYtWRGa5eV3eCgjVTTZBmKyNs3joGX/b8uV13vPq";
-SET @role = "admin";
-SET @gmail = "admin";
+SET @username = 'admin';
+SET @password = '$2a$11$eyXlppBlvJwv2fYtWRGa5eV3eCgjVTTZBmKyNs3joGX/b8uV13vPq';
+SET @role = 'admin';
+SET @gmail = 'admin';
 
 INSERT INTO tbl_users_account(username, password, role, gmail)
 SELECT
 	@username username,
 	@password password,
 	@role role,
-	CONCAT(@gmail, "@gmail.com") gmail;
+	CONCAT(@gmail, '@gmail.com') gmail;
 
 INSERT INTO tbl_users_profile(user_id, full_name, course)
 SELECT 
 user_id, 
 gmail, 
 CASE
-	WHEN role = "admin" THEN ""
+	WHEN role = 'admin' THEN ''
 	ELSE (
 		SELECT ELT(FLOOR(RAND() * 6) + 1, 'BSCRIM', 'BSED', 'BSDC', 'BSHM', 'BSIT', 'BSTM')
 	)
 END course
 FROM tbl_users_account;
 
-UPDATE tbl_users_account SET is_moderator = TRUE WHERE username IN ("student6", "student7");
+UPDATE tbl_users_account SET is_moderator = TRUE WHERE username IN ('student6', 'student7');
 
 INSERT tbl_users_connection(user_id, connection_id)
 SELECT 
