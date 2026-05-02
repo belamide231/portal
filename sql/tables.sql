@@ -7,6 +7,8 @@ USE cec_portal;
 SET FOREIGN_KEY_CHECKS = 0;
 SET FOREIGN_KEY_CHECKS = 1;
 
+--TIMOY
+
 -- PORTAL 
 DROP TABLE IF EXISTS tbl_portal_policy;
 CREATE TABLE IF NOT EXISTS tbl_portal_policy (
