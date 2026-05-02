@@ -23,6 +23,7 @@ SELECT '1', 'moderated', 'staff_only';
 DROP TABLE IF EXISTS tbl_users_account;
 CREATE TABLE IF NOT EXISTS tbl_users_account (
 	user_id VARCHAR(99) PRIMARY KEY DEFAULT (UUID()),
+		INDEX index_user_id (user_id),
 	username VARCHAR(99) NOT NULL UNIQUE,
 	password VARCHAR(256) NOT NULL,
 	ROLE ENUM('admin', 'instructor', 'student') NOT NULL,
@@ -35,6 +36,7 @@ CREATE TABLE IF NOT EXISTS tbl_users_account (
 DROP TABLE IF EXISTS tbl_users_profile;
 CREATE TABLE IF NOT EXISTS tbl_users_profile (
 	user_id VARCHAR(99) NOT NULL,
+		INDEX index_user_id (user_id),
 		FOREIGN KEY (user_id) REFERENCES tbl_users_account(user_id) 
 			ON DELETE CASCADE
 			ON UPDATE CASCADE,
@@ -47,9 +49,10 @@ CREATE TABLE IF NOT EXISTS tbl_users_profile (
 DROP TABLE IF EXISTS tbl_users_connection;
 CREATE TABLE IF NOT EXISTS tbl_users_connection (
 	user_id VARCHAR(99) NOT NULL,
+		INDEX index_user_id (user_id),
 		FOREIGN KEY (user_id) REFERENCES tbl_users_account(user_id)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE,
+			ON DELETE CASCADE
+			ON UPDATE CASCADE,
 	connection_id VARCHAR(99)
 );
 
@@ -81,6 +84,7 @@ CREATE TABLE IF NOT EXISTS tbl_users_update (
 DROP TABLE IF EXISTS tbl_groups;
 CREATE TABLE IF NOT EXISTS tbl_groups (
 	group_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+		INDEX index_group_id (group_id),
 	group_created_stamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	group_type ENUM('group', 'class') NOT NULL,
 	join_policy ENUM('open', 'close', 'request_join') NOT NULL DEFAULT 'close',
@@ -96,22 +100,28 @@ CREATE TABLE IF NOT EXISTS tbl_groups (
 DROP TABLE IF EXISTS tbl_group_members;
 CREATE TABLE IF NOT EXISTS tbl_group_members (
 	membership_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+		INDEX index_membership_id (membership_id),
 	group_id INT NOT NULL,
-		FOREIGN KEY (group_id) REFERENCES tbl_groups(group_id)
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE,
+		INDEX index_group_id (group_id),
+		FOREIGN KEY (group_id) REFERENCES tbl_groups(group_id),
+			ON DELETE CASCADE 
+			ON UPDATE CASCADE,
 	member_id VARCHAR(99) NOT NULL,
+		INDEX index_member_id  (member_id),
 		FOREIGN KEY (member_id) REFERENCES tbl_users_account(user_id)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE,
+			ON DELETE CASCADE
+			ON UPDATE CASCADE,
 	join_stamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 	referrer_id VARCHAR(99) NULL DEFAULT NULL,
+		INDEX index_referrer_id (referrer_id)
 		FOREIGN KEY (referrer_id) REFERENCES tbl_users_account(user_id)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE,
+			ON DELETE CASCADE
+			ON UPDATE CASCADE,
 	group_role ENUM('group_author', 'group_moderator', 'group_member') NOT NULL DEFAULT 'group_member',
 	is_group_moderator BOOLEAN NOT NULL DEFAULT FALSE
 ) ENGINE = Innodb;
+
+/* ADDING INDEX EACH TABLE'S COLUMN */
 
 DROP TABLE IF EXISTS tbl_group_membership_requests;
 CREATE TABLE IF NOT EXISTS tbl_group_membership_requests (
@@ -131,8 +141,6 @@ CREATE TABLE IF NOT EXISTS tbl_group_membership_requests (
 	origin ENUM('invited', 'request_join') NOT NULL,
 	origin_stamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP()
 ) ENGINE = Innodb;
-
-SET FOREIGN_KEY_CHECKS = 1;
 
 -- POST
 DROP TABLE IF EXISTS tbl_posts;
