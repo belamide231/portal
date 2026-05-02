@@ -1,0 +1,106 @@
+<div class="transition-all absolute h-dvh w-dvw top-0 left-0 flex items-center justify-center p-4 z-100 backdrop-blur-sm" 
+     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-black/70' : 'bg-black/50'">
+    
+    <div class="rounded-lg shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in-up flex flex-col transition-colors duration-300" 
+         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-white'">
+        
+        <div class="px-8 py-5 flex justify-between items-center shrink-0 transition-colors" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-b border-slate-700' : 'background-cec-blue'">
+            <div class="flex items-center gap-4">
+                <img [src]="image.cecLogoPath" alt="CEC Logo" class="h-10 w-10 object-contain rounded-full p-1 shadow-sm transition-colors" 
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-white'">
+                <h2 class="text-white text-2xl font-bold tracking-wide">Invite Members</h2>
+            </div>
+            
+            <button (click)="navigator.descend(route)" class="cursor-pointer transition-colors" 
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-white' : 'text-white/80 hover:text-white'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-8 pb-6 flex-grow flex flex-col gap-6">
+            
+            <div>
+                <p class="text-base leading-relaxed transition-colors" 
+                   [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300' : 'text-gray-600'">
+                    Search for users to invite to <strong [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : ''">BSIT Batch 2026</strong>. 
+                </p>
+            </div>
+
+            <div class="relative z-10">
+                <label for="userSearch" class="flex items-center gap-2 text-base font-semibold mb-2 transition-colors" 
+                       [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-200' : 'text-gray-700'">
+                    <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    Search Users
+                </label>
+                <div class="relative">
+                    <input 
+                        #searchInput
+                        type="text" 
+                        id="userSearch" 
+                        class="w-full border rounded-md pl-4 pr-10 py-3 focus:outline-none focus:ring-2 transition-all text-base"
+                        autocomplete="off"
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400 focus:ring-blue-500/40 focus:border-blue-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400 focus:ring-blue-500/50 focus:border-blue-500'"
+                        placeholder="Search by Name, Username, or Email"
+                    >
+                </div>
+                
+                </div>
+
+            <div class="flex-grow">
+                <label class="flex items-center justify-between text-base font-semibold mb-2 transition-colors" 
+                       [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-200' : 'text-gray-700'">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        Selected to Invite
+                    </span>
+                    <span class="text-xs font-normal" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-500'">2 selected</span>
+                </label>
+                
+                <div class="w-full min-h-[120px] border rounded-md p-3 flex flex-wrap content-start gap-2 transition-all text-base overflow-y-auto"
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 border-slate-600' : 'bg-gray-50 border-gray-300'">
+                    
+                    <div class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full border shadow-sm transition-colors"
+                         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border-slate-600 text-gray-200' : 'bg-white border-gray-200 text-gray-700'">
+                        <div class="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">JD</div>
+                        <span class="text-sm font-medium">John Doe</span>
+                        <button class="p-0.5 rounded-full hover:bg-red-500/10 hover:text-red-500 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full border shadow-sm transition-colors"
+                         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border-slate-600 text-gray-200' : 'bg-white border-gray-200 text-gray-700'">
+                        <div class="h-6 w-6 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold">M</div>
+                        <span class="text-sm font-medium">mills_dev</span>
+                        <button class="p-0.5 rounded-full hover:bg-red-500/10 hover:text-red-500 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+
+                    </div>
+            </div>
+
+            <div class="flex justify-end gap-4 mt-4 pt-4 border-t" [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700' : 'border-gray-100'">
+                <button (click)="navigator.descend(route)" class="px-6 py-2.5 font-medium rounded-md transition-colors cursor-pointer text-base flex items-center" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'">
+                    Cancel
+                </button>
+                <button class="cursor-pointer text-white px-8 py-2.5 rounded-md font-medium shadow-md transition-opacity text-base flex items-center gap-2" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 hover:bg-blue-700' : 'background-cec-blue hover:opacity-90'">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    Send Invites
+                </button>
+            </div>
+        </div>
+        
+        <div class="border-t px-8 py-4 shrink-0 transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700' : 'bg-gray-50 border-gray-100'">
+            <p class="text-sm text-center transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-500'">
+                Having trouble? <a href="https://www.facebook.com/mills.belamide.2024/" class="font-medium hover:underline" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-blue-600'">Reach developer</a>
+            </p>
+        </div>
+
+    </div>
+</div>

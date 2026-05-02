@@ -1,0 +1,530 @@
+<nav class="fixed right-4 lg:right-10 top-1/2 -translate-y-1/2 z-[200] hidden md:flex flex-col gap-10 p-5 rounded-2xl backdrop-blur-md border transition-all duration-300 shadow-2xl"
+     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900/40 border-slate-700/50' : 'bg-white/40 border-[#0C0C84]/10'">
+
+    <!-- 01 Welcome -->
+    <button (click)="displayElement.scrollTo({ top: 0, behavior: 'smooth' })"
+            class="group flex items-center justify-end gap-4 cursor-pointer outline-none text-right">
+
+        <div class="flex flex-col transition-opacity duration-300"
+             [class.opacity-100]="activeSection === 'intro'"
+             [class.opacity-40]="activeSection !== 'intro'">
+
+            <span class="text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1"
+                  [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-500' : 'text-[#0C0C84]/60'">01</span>
+
+            <span class="text-xs font-black uppercase tracking-widest transition-colors"
+                  [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-[#0C0C84]'">
+                Welcome
+            </span>
+        </div>
+
+        <div class="relative flex items-center justify-center">
+            <div class="h-2.5 w-2.5 rounded-full z-10 transition-all duration-500"
+                 [class.scale-150]="activeSection === 'intro'"
+                 [class]="(theme.isDarkMode$ | async) === '1'
+                    ? (activeSection === 'intro' ? 'bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.8)]' : 'bg-slate-600')
+                    : (activeSection === 'intro' ? 'bg-[#0C0C84]' : 'bg-gray-300')"></div>
+
+            <div class="absolute top-2.5 w-[1.5px] h-10 opacity-20"
+                 [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-400' : 'bg-[#0C0C84]'"></div>
+        </div>
+    </button>
+
+    <!-- 02 Heritage -->
+    <button (click)="heritage.scrollIntoView({ behavior: 'smooth', inline: 'start' })"
+            class="group flex items-center justify-end gap-4 cursor-pointer outline-none text-right">
+
+        <div class="flex flex-col transition-opacity duration-300"
+             [class.opacity-100]="activeSection === 'heritage'"
+             [class.opacity-40]="activeSection !== 'heritage'">
+
+            <span class="text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1"
+                  [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-500' : 'text-[#0C0C84]/60'">02</span>
+
+            <span class="text-xs font-black uppercase tracking-widest transition-colors"
+                  [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-[#0C0C84]'">
+                Our Legacy
+            </span>
+        </div>
+
+        <div class="relative flex items-center justify-center">
+            <div class="h-2.5 w-2.5 rounded-full z-10 transition-all duration-500"
+                 [class.scale-150]="activeSection === 'heritage'"
+                 [class]="(theme.isDarkMode$ | async) === '1'
+                    ? (activeSection === 'heritage' ? 'bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.8)]' : 'bg-slate-600')
+                    : (activeSection === 'heritage' ? 'bg-[#0C0C84]' : 'bg-gray-300')"></div>
+
+            <div class="absolute top-2.5 w-[1.5px] h-10 opacity-20"
+                 [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-400' : 'bg-[#0C0C84]'"></div>
+        </div>
+    </button>
+
+    <!-- 03 Programs -->
+    <button (click)="it.scrollIntoView({ behavior: 'smooth', inline: 'start' })"
+            class="group flex items-center justify-end gap-4 cursor-pointer outline-none text-right">
+
+        <div class="flex flex-col transition-opacity duration-300"
+             [class.opacity-100]="activeSection === 'programs'"
+             [class.opacity-40]="activeSection !== 'programs'">
+
+            <span class="text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1"
+                  [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-500' : 'text-[#0C0C84]/60'">03</span>
+
+            <span class="text-xs font-black uppercase tracking-widest transition-colors"
+                  [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-[#0C0C84]'">
+                Academic Programs
+            </span>
+        </div>
+
+        <div class="relative flex items-center justify-center">
+            <div class="h-2.5 w-2.5 rounded-full z-10 transition-all duration-500"
+                 [class.scale-150]="activeSection === 'programs'"
+                 [class]="(theme.isDarkMode$ | async) === '1'
+                    ? (activeSection === 'programs' ? 'bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.8)]' : 'bg-slate-600')
+                    : (activeSection === 'programs' ? 'bg-[#0C0C84]' : 'bg-gray-300')"></div>
+
+            <div class="absolute top-2.5 w-[1.5px] h-10 opacity-20"
+                 [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-400' : 'bg-[#0C0C84]'"></div>
+        </div>
+    </button>
+
+    <!-- 04 Contact -->
+    <button (click)="contact.scrollIntoView({ behavior: 'smooth' })"
+            class="group flex items-center justify-end gap-4 cursor-pointer outline-none text-right">
+
+        <div class="flex flex-col transition-opacity duration-300"
+             [class.opacity-100]="activeSection === 'contact'"
+             [class.opacity-40]="activeSection !== 'contact'">
+
+            <span class="text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1"
+                  [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-500' : 'text-[#0C0C84]/60'">04</span>
+
+            <span class="text-xs font-black uppercase tracking-widest transition-colors"
+                  [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-[#0C0C84]'">
+                Get in Touch
+            </span>
+        </div>
+
+        <div class="relative flex items-center justify-center">
+            <div class="h-2.5 w-2.5 rounded-full z-10 transition-all duration-500"
+                 [class.scale-150]="activeSection === 'contact'"
+                 [class]="(theme.isDarkMode$ | async) === '1'
+                    ? (activeSection === 'contact' ? 'bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.8)]' : 'bg-slate-600')
+                    : (activeSection === 'contact' ? 'bg-[#0C0C84]' : 'bg-gray-300')"></div>
+        </div>
+    </button>
+
+    <!-- 05 Portal -->
+    <button (click)="displayElement.scrollTo({ top: displayElement.scrollHeight, behavior: 'smooth' })"
+            class="group flex items-center justify-end gap-4 cursor-pointer outline-none text-right">
+
+        <div class="flex flex-col transition-opacity duration-300"
+             [class.opacity-100]="activeSection === 'portal'"
+             [class.opacity-40]="activeSection !== 'portal'">
+
+            <span class="text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1"
+                  [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-500' : 'text-[#0C0C84]/60'">05</span>
+
+            <span class="text-xs font-black uppercase tracking-widest transition-colors"
+                  [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-[#0C0C84]'">
+                Student Portal
+            </span>
+        </div>
+
+        <div class="relative flex items-center justify-center">
+            <div class="h-2.5 w-2.5 rounded-full z-10 transition-all duration-500"
+                 [class.scale-150]="activeSection === 'portal'"
+                 [class]="(theme.isDarkMode$ | async) === '1'
+                    ? (activeSection === 'portal' ? 'bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.8)]' : 'bg-slate-600')
+                    : (activeSection === 'portal' ? 'bg-[#0C0C84]' : 'bg-gray-300')"></div>
+        </div>
+    </button>
+
+</nav>
+
+<div id="displayElement" #displayElement class="w-full h-dvh overflow-x-hidden scroll-smooth transition-colors duration-300" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 text-white' : 'bg-white text-gray-900'">
+
+    <section #intro class="w-full min-h-dvh py-10 flex justify-center items-center flex-col z-10 gap-8 md:gap-12 px-6 relative" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900' : 'bg-white'">
+        <div class="absolute inset-0 z-0" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-gradient-to-b from-slate-900 to-slate-800' : 'bg-gradient-to-b from-gray-50 to-white'"></div>        
+
+        <video 
+            #bgVideo
+            [src]="image.videoPath" 
+            autoplay 
+            [muted]="true" 
+            loop 
+            playsinline 
+            preload="auto"
+            (canplay)="bgVideo.play()"
+            class="absolute inset-0 w-full h-full object-cover z-0">
+        </video>
+
+        <div class="absolute inset-0 w-full h-full z-1backdrop-blur-md transition-colors"
+            [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800/80' : 'bg-white/80'">
+        </div>
+
+        <button (click)="theme.switchTheme()"
+                class="absolute top-6 right-6 lg:top-10 lg:right-12 z-50 p-3 rounded-full shadow-lg transition-transform hover:scale-110 cursor-pointer"
+                [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 text-yellow-400 border border-slate-600' : 'bg-white text-[#0C0C84] border border-gray-200'">
+
+            <div *ngIf="(theme.isDarkMode$ | async) === '0'">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                </svg>
+            </div>
+
+            <div *ngIf="(theme.isDarkMode$ | async) === '1'">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+            </div>
+
+        </button>
+        
+        <div class="z-10 flex flex-col items-center gap-6">
+            <img [src]="image.cecLogoPath" alt="logo" class="scroll-fade w-32 md:w-48 drop-shadow-xl hover:scale-105 transition-transform duration-500">
+            <h1 class="text-3xl md:text-5xl lg:text-6xl text-center font-bold tracking-tight max-w-4xl leading-tight" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-[#0C0C84]'">
+                Welcome to the <br> Cebu Eastern College Portal
+            </h1>
+        </div>
+        
+        <div class="flex flex-col md:flex-row gap-4 md:gap-6 items-center z-10 mt-4">
+            <button (click)="this.router.navigate(['/login']);" class="w-full md:w-auto rounded-full text-lg md:text-xl font-semibold flex justify-center items-center px-10 py-3.5 cursor-pointer text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600' : 'bg-[#0C0C84]'">
+                Login to Portal
+            </button>
+            <span class="font-medium text-sm uppercase tracking-widest hidden md:block" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-500' : 'text-gray-400'">or</span>
+            <button (click)="displayElement.scrollTo({ top: displayElement.clientHeight, behavior: 'smooth' })" class="group w-full md:w-auto rounded-full text-lg md:text-xl font-medium flex justify-center items-center gap-3 px-8 py-3.5 cursor-pointer border-2 transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 text-blue-300 border-blue-400/20 hover:border-blue-400/40 hover:bg-slate-700' : 'bg-white text-[#0C0C84] border-[#0C0C84]/10 hover:border-[#0C0C84]/30 hover:bg-gray-50'">
+                <span>Explore CEC</span>
+                <img [src]="image.pointFingerBelowPath" alt="scroll" class="h-6 opacity-70 group-hover:translate-y-1 transition-transform">
+            </button>
+        </div>
+    </section>
+
+    <section #heritage class="border-t border-t-amber-500 relative w-full min-h-dvh py-16 lg:py-0 flex justify-center items-center overflow-hidden flex-col lg:flex-row gap-10 lg:gap-16 px-6 lg:px-12">
+        
+        <div class="absolute inset-0 z-0">
+            <img [src]="image.cecGaisanoBuildingPath" alt="cec-gaisano-building" class="w-full h-full object-cover scale-110">
+            <div class="absolute inset-0 mix-blend-multiply" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900/90' : 'bg-[#0C0C84]/80'"></div>
+        </div>
+
+        <aside class="flex flex-col items-center lg:items-start gap-8 lg:gap-12 w-full lg:w-1/2 z-10">
+            <div class="backdrop-blur-md w-full text-base md:text-lg lg:text-xl font-medium p-8 md:p-10 rounded-3xl shadow-2xl leading-relaxed border" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900/90 text-gray-200 border-slate-700' : 'bg-white/95 text-gray-800 border-white/20'">
+                <span class="font-bold text-2xl block mb-4" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-[#0C0C84]'">Our Heritage</span>
+                Cebu Eastern College (CEC) is a private, non-sectarian Chinese-Filipino educational institution in Cebu City, founded in 1915. The school offers basic education from preschool to senior high, as well as college programs. Known for its blend of Philippine and Chinese cultural heritage, CEC provides academic instruction in English, Filipino, and Chinese, aiming to develop well-rounded students with strong cultural identity and community values.
+            </div>
+
+            <button (click)="displayElement.scrollTo({ top: displayElement.clientHeight + heritage.clientHeight, behavior: 'smooth' })" class="w-full lg:w-fit rounded-full text-lg font-semibold flex justify-center items-center gap-3 px-8 py-4 cursor-pointer shadow-xl hover:scale-105 transition-transform" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 text-blue-300 border border-slate-600' : 'bg-white text-[#0C0C84]'">
+                Check Offered Courses
+                <img [src]="image.pointFingerBelowPath" alt="scroll" class="h-5">
+            </button>
+        </aside>
+
+        <aside class="z-10 flex flex-col gap-6 md:gap-8 w-full lg:w-1/2 max-w-[700px]">
+            <img [src]="image.cecSsgPath" alt="cec-ssg-officers" class="scroll-fade rounded-3xl w-full object-cover shadow-2xl border-4" [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700/50' : 'border-white/10'">
+            
+            <div class="w-full p-4 md:p-6 rounded-3xl flex flex-col sm:flex-row items-center gap-6 backdrop-blur-md border shadow-xl" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800/40 border-slate-700' : 'bg-white/10 border-white/20'">
+                <img [src]="image.cecLandMarkPath" alt="cec-landmark" class="scroll-fade w-full sm:w-40 md:w-48 rounded-2xl shadow-md object-cover aspect-square sm:aspect-auto">
+                
+                <aside class="w-full flex flex-col gap-4 items-center sm:items-start text-white">
+                    <h1 class="text-lg md:text-xl font-medium text-center sm:text-left leading-snug">
+                        40 Leon Kilat Street,<br> Cebu City 6000, Philippines
+                    </h1>
+                    <a href="https://www.google.com/maps/place/Cebu+Eastern+College+Cebu+city/@10.2925371,123.8968255,212a,35y,332.25h,45.72t/data=!3m1!1e3!4m6!3m5!1s0x33a99bfcc60d650d:0x5ee73506c68dd233!8m2!3d10.2944329!4d123.8960169!16s%2Fm%2F03qjz31?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="w-full sm:w-auto flex justify-center items-center text-sm md:text-base font-bold py-2.5 px-6 gap-2 rounded-full cursor-pointer transition-colors shadow-md" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 text-blue-300 hover:bg-slate-700' : 'bg-white text-[#0C0C84] hover:bg-gray-100'">
+                        <img [src]="image.cecLocationPath" alt="map" class="w-5 h-5" [class]="(theme.isDarkMode$ | async) === '1' ? 'brightness-200' : ''">
+                        View on Map
+                    </a>
+                </aside>
+            </div>
+        </aside>
+    </section>
+
+    <section #programs class="overflow-hidden border-t border-t-amber-500 w-full h-dvh overflow-x-hidden" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900' : 'bg-gray-50'">
+
+        <div class="w-max h-dvh z-10 flex flex-row">
+
+            <section #crim class="w-screen shrink-0 h-dvh overflow-y-auto lg:overflow-hidden z-10 flex flex-col lg:flex-row items-center lg:justify-center gap-8 lg:gap-12 p-6 py-12 lg:py-0">
+                <aside class="w-full lg:w-1/2 max-w-[700px] flex flex-col gap-6">
+                    <img [src]="image.crimPath" alt="crim-image" class="scroll-fade w-full rounded-3xl shadow-xl border" [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700' : 'border-gray-200'">
+                    
+                    <div class="flex w-full flex-wrap gap-2 p-1 rounded-xl" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-gray-200'">
+                        <button (click)="crim.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-bold py-2.5 rounded-lg cursor-pointer shadow-sm transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 text-white' : 'bg-white text-[#0C0C84]'">CRIM</button>
+                        <button (click)="it.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSIT</button>
+                        <button (click)="educ.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">EDUC</button>
+                        <button (click)="tm.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSTM</button>
+                        <button (click)="hm.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSHM</button>
+                    </div>
+
+                    <div class="hidden md:grid grid-cols-4 gap-3">
+                        <img [src]="image.crimPath1" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.crimPath2" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.crimPath3" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.crimPath4" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform">
+                    </div>
+                </aside>
+                
+                <aside class="w-full lg:w-[500px] flex flex-col gap-6">
+                    <div class="w-full text-base md:text-lg font-medium text-white p-8 rounded-3xl shadow-lg leading-relaxed" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-[#0C0C84]'">
+                        <span class="text-2xl font-bold block mb-2 text-yellow-400">BS Criminology</span>
+                        Cebu Eastern College offers a variety of academic programs, including BS Criminology. Criminology is the scientific study of crime, criminal behavior, and the systems established to prevent and control crime.
+                    </div>   
+                    <div class="text-base md:text-lg pl-4 p-6 rounded-3xl shadow-sm border" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 text-gray-300 border-slate-700' : 'bg-white text-gray-700 border-gray-100'">
+                        <h1 class="font-bold mb-3" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-[#0C0C84]'">Career Opportunities:</h1>
+                        <ul class="pl-5 list-disc space-y-1 font-medium" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 marker:text-blue-400' : 'text-gray-600 marker:text-[#0C0C84]'">
+                            <li>Police Officer</li>
+                            <li>Criminologist</li>
+                            <li>Forensic Specialist</li>
+                            <li>Criminal Investigator</li>
+                            <li>Corrections Officer</li>
+                            <li>Parole and Probation Officer</li>
+                            <li>Security Consultant</li>
+                        </ul>
+                    </div>
+                </aside>
+            </section>
+
+            <section #it class="w-screen shrink-0 h-dvh overflow-y-auto lg:overflow-hidden z-10 flex flex-col lg:flex-row items-center lg:justify-center gap-8 lg:gap-12 p-6 py-12 lg:py-0">
+                <aside class="w-full lg:w-1/2 max-w-[700px] flex flex-col gap-6">
+                    <img [src]="image.itPath" alt="it-image" class="scroll-fade w-full rounded-3xl shadow-xl border" [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700' : 'border-gray-200'">
+                    
+                    <div class="flex w-full flex-wrap gap-2 p-1 rounded-xl" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-gray-200'">
+                        <button (click)="crim.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">CRIM</button>
+                        <button (click)="it.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-bold py-2.5 rounded-lg cursor-pointer shadow-sm transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 text-white' : 'bg-white text-[#0C0C84]'">BSIT</button>
+                        <button (click)="educ.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">EDUC</button>
+                        <button (click)="tm.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSTM</button>
+                        <button (click)="hm.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSHM</button>
+                    </div>
+
+                    <div class="hidden md:grid grid-cols-4 gap-3">
+                        <img [src]="image.itPath1" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.itPath2" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.itPath3" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.itPath4" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform">
+                    </div>
+                </aside>
+                
+                <aside class="w-full lg:w-[500px] flex flex-col gap-6">
+                    <div class="w-full text-base md:text-lg font-medium text-white p-8 rounded-3xl shadow-lg leading-relaxed" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-[#0C0C84]'">
+                        <span class="text-2xl font-bold block mb-2 text-yellow-400">BS Information Technology</span>
+                        A program focused on the study of computing technology, including software development, networking, database management, and systems administration.
+                    </div>   
+                    <div class="text-base md:text-lg pl-4 p-6 rounded-3xl shadow-sm border" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 text-gray-300 border-slate-700' : 'bg-white text-gray-700 border-gray-100'">
+                        <h1 class="font-bold mb-3" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-[#0C0C84]'">Career Opportunities:</h1>
+                        <ul class="pl-5 list-disc space-y-1 font-medium" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 marker:text-blue-400' : 'text-gray-600 marker:text-[#0C0C84]'">
+                            <li>Software Developer / Programmer</li>
+                            <li>Web Developer</li>
+                            <li>Network Administrator</li>
+                            <li>Database Administrator</li>
+                            <li>IT Support / Helpdesk Specialist</li>
+                            <li>And More...</li>
+                        </ul>
+                    </div>
+                </aside>
+            </section>
+
+            <section #educ class="w-screen shrink-0 h-dvh overflow-y-auto lg:overflow-hidden z-10 flex flex-col lg:flex-row items-center lg:justify-center gap-8 lg:gap-12 p-6 py-12 lg:py-0">
+                <aside class="w-full lg:w-1/2 max-w-[700px] flex flex-col gap-6">
+                    <img [src]="image.educPath" alt="educ-image" class="scroll-fade w-full rounded-3xl shadow-xl border" [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700' : 'border-gray-200'">
+                    
+                    <div class="flex w-full flex-wrap gap-2 p-1 rounded-xl" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-gray-200'">
+                        <button (click)="crim.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">CRIM</button>
+                        <button (click)="it.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSIT</button>
+                        <button (click)="educ.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-bold py-2.5 rounded-lg cursor-pointer shadow-sm transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 text-white' : 'bg-white text-[#0C0C84]'">EDUC</button>
+                        <button (click)="tm.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSTM</button>
+                        <button (click)="hm.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSHM</button>
+                    </div>
+
+                    <div class="hidden md:grid grid-cols-4 gap-3">
+                        <img [src]="image.educPath1" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.educPath2" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.educPath3" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.educPath4" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform">
+                    </div>
+                </aside>
+                
+                <aside class="w-full lg:w-[500px] flex flex-col gap-6">
+                    <div class="w-full text-base md:text-lg font-medium text-white p-8 rounded-3xl shadow-lg leading-relaxed" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-[#0C0C84]'">
+                        <span class="text-2xl font-bold block mb-2 text-yellow-400">BS Education</span>
+                        A program focused on the study of teaching and learning strategies, curriculum development, classroom management, and educational assessment to guide learners in academic settings.
+                    </div>   
+                    <div class="text-base md:text-lg pl-4 p-6 rounded-3xl shadow-sm border" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 text-gray-300 border-slate-700' : 'bg-white text-gray-700 border-gray-100'">
+                        <h1 class="font-bold mb-3" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-[#0C0C84]'">Career Opportunities:</h1>
+                        <ul class="pl-5 list-disc space-y-1 font-medium" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 marker:text-blue-400' : 'text-gray-600 marker:text-[#0C0C84]'">
+                            <li>Elementary School Teacher</li>
+                            <li>High School Teacher (Math or English)</li>
+                            <li>Curriculum Developer</li>
+                            <li>Educational Coordinator</li>
+                            <li>Tutor / Learning Center Instructor</li>
+                            <li>And more...</li>
+                        </ul>
+                    </div>
+                </aside>
+            </section>
+
+            <section #tm class="w-screen shrink-0 h-dvh overflow-y-auto lg:overflow-hidden z-10 flex flex-col lg:flex-row items-center lg:justify-center gap-8 lg:gap-12 p-6 py-12 lg:py-0">
+                <aside class="w-full lg:w-1/2 max-w-[700px] flex flex-col gap-6">
+                    <img [src]="image.tourismPath" alt="tourism-image" class="scroll-fade w-full rounded-3xl shadow-xl border" [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700' : 'border-gray-200'">
+                    
+                    <div class="flex w-full flex-wrap gap-2 p-1 rounded-xl" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-gray-200'">
+                        <button (click)="crim.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">CRIM</button>
+                        <button (click)="it.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSIT</button>
+                        <button (click)="educ.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">EDUC</button>
+                        <button (click)="tm.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-bold py-2.5 rounded-lg cursor-pointer shadow-sm transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 text-white' : 'bg-white text-[#0C0C84]'">BSTM</button>
+                        <button (click)="hm.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSHM</button>
+                    </div>
+
+                    <div class="hidden md:grid grid-cols-4 gap-3">
+                        <img [src]="image.tourismPath1" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.tourismPath2" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.tourismPath3" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.tourismPath4" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform">
+                    </div>
+                </aside>
+                
+                <aside class="w-full lg:w-[500px] flex flex-col gap-6">
+                    <div class="w-full text-base md:text-lg font-medium text-white p-8 rounded-3xl shadow-lg leading-relaxed" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-[#0C0C84]'">
+                        <span class="text-2xl font-bold block mb-2 text-yellow-400">BS Tourism Management</span>
+                        Focused on the travel and hospitality industries, including tourism planning, hotel operations, customer service, and event management.
+                    </div>   
+                    <div class="text-base md:text-lg pl-4 p-6 rounded-3xl shadow-sm border" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 text-gray-300 border-slate-700' : 'bg-white text-gray-700 border-gray-100'">
+                        <h1 class="font-bold mb-3" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-[#0C0C84]'">Career Opportunities:</h1>
+                        <ul class="pl-5 list-disc space-y-1 font-medium" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 marker:text-blue-400' : 'text-gray-600 marker:text-[#0C0C84]'">
+                            <li>Travel Consultant / Agent</li>
+                            <li>Tour Guide / Manager</li>
+                            <li>Hotel or Resort Manager</li>
+                            <li>Event Planner / Coordinator</li>
+                            <li>Cruise Ship Staff / Manager</li>
+                            <li>Airline Customer Service</li>
+                            <li>And more...</li>
+                        </ul>
+                    </div>
+                </aside>
+            </section>
+
+            <section #hm class="w-screen shrink-0 h-dvh overflow-y-auto lg:overflow-hidden z-10 flex flex-col lg:flex-row items-center lg:justify-center gap-8 lg:gap-12 p-6 py-12 lg:py-0">
+                <aside class="w-full lg:w-1/2 max-w-[700px] flex flex-col gap-6">
+                    <img [src]="image.hmPath" alt="hospitality-image" class="scroll-fade w-full rounded-3xl shadow-xl border" [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700' : 'border-gray-200'">
+                    
+                    <div class="flex w-full flex-wrap gap-2 p-1 rounded-xl" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-gray-200'">
+                        <button (click)="crim.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">CRIM</button>
+                        <button (click)="it.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSIT</button>
+                        <button (click)="educ.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">EDUC</button>
+                        <button (click)="tm.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-medium py-2.5 rounded-lg cursor-pointer transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-800'">BSTM</button>
+                        <button (click)="hm.scrollIntoView({ behavior: 'smooth', inline: 'start' })" class="flex-1 text-sm md:text-base font-bold py-2.5 rounded-lg cursor-pointer shadow-sm transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 text-white' : 'bg-white text-[#0C0C84]'">BSHM</button>
+                    </div>
+
+                    <div class="hidden md:grid grid-cols-4 gap-3">
+                        <img [src]="image.hmPath1" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.hmPath2" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.hmPath3" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform"><img [src]="image.hmPath4" class="scroll-fade rounded-xl object-cover aspect-square shadow-sm hover:scale-105 transition-transform">
+                    </div>
+                </aside>
+                
+                <aside class="w-full lg:w-[500px] flex flex-col gap-6">
+                    <div class="w-full text-base md:text-lg font-medium text-white p-8 rounded-3xl shadow-lg leading-relaxed" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-[#0C0C84]'">
+                        <span class="text-2xl font-bold block mb-2 text-yellow-400">BS Hospitality Management</span>
+                        Focused on hotel and restaurant operations, customer service, and event management to prepare students for the global hospitality industry.
+                    </div>   
+                    <div class="text-base md:text-lg pl-4 p-6 rounded-3xl shadow-sm border" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 text-gray-300 border-slate-700' : 'bg-white text-gray-700 border-gray-100'">
+                        <h1 class="font-bold mb-3" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-[#0C0C84]'">Career Opportunities:</h1>
+                        <ul class="pl-5 list-disc space-y-1 font-medium" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 marker:text-blue-400' : 'text-gray-600 marker:text-[#0C0C84]'">
+                            <li>Hotel / Restaurant Manager</li>
+                            <li>Event Coordinator / Planner</li>
+                            <li>Front Office Officer</li>
+                            <li>Food and Beverage Supervisor</li>
+                            <li>Cruise Ship Staff</li>
+                            <li>Hospitality Marketing</li>
+                            <li>And more...</li>
+                        </ul>
+                    </div>
+                </aside>
+            </section>
+
+        </div>
+    </section>
+
+    <section #contact class="border-t border-t-amber-500 relative w-full min-h-dvh py-16 lg:py-0 lg:h-dvh flex justify-center items-center overflow-hidden flex-col lg:flex-row gap-10 lg:gap-16 px-6 lg:px-12">
+        
+        <div class="absolute inset-0 z-0">
+            <img [src]="image.graduationBackgroundPath" alt="graduation" class="w-full h-full object-cover scale-110">
+            <div class="absolute inset-0" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900/90' : 'bg-[#0C0C84]/85'"></div>
+        </div>
+
+        <aside class="z-10 flex flex-col gap-6 text-white text-base md:text-lg lg:text-xl w-full lg:max-w-[500px] font-medium text-center lg:text-left">
+            <div class="w-full p-8 rounded-3xl shadow-2xl backdrop-blur-sm leading-relaxed border" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800/50 border-slate-600' : 'bg-white/10 border-white/20'">
+                At Cebu Eastern College, graduation marks the beginning of a new chapter. Through the programs and training you have completed, you have developed the skills, knowledge, and values needed to succeed in your chosen field.
+            </div>
+            <div class="w-full p-8 rounded-3xl shadow-2xl backdrop-blur-sm leading-relaxed border" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800/50 border-slate-600' : 'bg-white/10 border-white/20'">
+                As a CEC graduate, you carry the confidence to pursue your goals, the discipline to overcome challenges, and the readiness to contribute meaningfully to your profession and community.
+            </div>
+        </aside>
+
+        <div class="hidden lg:flex z-10 shrink-0">
+            <h2 class="text-6xl uppercase rotate-180 drop-shadow-2xl [writing-mode:vertical-lr] font-bold tracking-wider opacity-90" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-yellow-500' : 'text-yellow-400'">Reach Your Dreams</h2>
+        </div>
+
+        <aside class="z-10 flex flex-col gap-8 w-full lg:w-auto items-center lg:items-start">
+
+            <section class="grid grid-cols-2 md:grid-cols-12 md:grid-rows-2 gap-3 p-3 rounded-3xl w-full max-w-lg lg:max-w-2xl backdrop-blur-md shadow-2xl border" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800/30 border-slate-600' : 'bg-white/20 border-white/30'">
+                <img [src]="image.graduationStudnet3Path" class="scroll-fade rounded-xl w-full h-full object-cover aspect-square md:aspect-auto col-span-1 md:col-start-1 md:col-span-5 md:row-start-1 md:row-span-1 hover:scale-[1.02] transition-transform">
+                <img [src]="image.graduationStudnet2Path" class="scroll-fade rounded-xl w-full h-full object-cover aspect-square md:aspect-auto col-span-1 md:col-start-1 md:col-span-5 md:row-start-2 md:row-span-1 hover:scale-[1.02] transition-transform">
+                <img [src]="image.graduationStudnet1Path" class="scroll-fade rounded-xl w-full h-full object-cover aspect-video md:aspect-auto col-span-2 md:col-start-6 md:col-span-7 md:row-start-1 md:row-span-2 hover:scale-[1.02] transition-transform">
+            </section>
+
+            <section class="flex flex-col items-center lg:items-start gap-4 mt-4">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl text-white font-extrabold text-center lg:text-left drop-shadow-xl tracking-tight">BECOME AN EASTERNIAN</h1>
+                <span class="w-fit text-xl md:text-2xl lg:text-3xl font-bold italic px-6 py-2 rounded-full shadow-xl uppercase tracking-wide" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-900 bg-yellow-500' : 'text-[#0C0C84] bg-yellow-400'">Test your limit!</span>
+            </section>
+
+            <section class="flex flex-col gap-2 items-center lg:items-start mt-6 p-6 rounded-2xl backdrop-blur-sm w-full border" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900/60 border-slate-700' : 'bg-black/30 border-white/10'">
+                <h1 class="text-white text-sm md:text-base font-medium uppercase tracking-widest text-gray-300">Contact us for more information</h1>
+                <h1 class="text-white text-3xl md:text-4xl font-bold tracking-wider">(032) 254 2761</h1>
+            </section>
+        </aside>
+
+    </section>
+
+    <section #portal class="border-t border-t-amber-500 w-full min-h-[50dvh] py-16 flex justify-center items-center flex-col z-10 gap-8 px-6 border-t" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-800' : 'bg-gray-50 border-gray-200'">
+        <img [src]="image.cecLogoPath" alt="logo" class="scroll-fade w-20 md:w-28 opacity-80 mb-2">
+        <h1 class="text-2xl md:text-4xl text-center font-bold tracking-tight" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-[#0C0C84]'">Access Your Student Portal</h1>
+        <button (click)="this.router.navigate(['/login']);" class="text-white text-xl font-bold py-4 px-12 rounded-full cursor-pointer shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600' : 'bg-[#0C0C84]'">
+            Login Now
+        </button>
+    </section> 
+
+</div>
+
+<style>
+    /* Target the scrollable div */
+    #displayElement {
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: rgba(156, 163, 175, 0.5) transparent; /* Firefox */
+    }
+
+    /* Webkit Browsers (Chrome, Edge, Safari) */
+    #displayElement::-webkit-scrollbar {
+        width: 6px; /* Slim, modern width */
+    }
+
+    #displayElement::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #displayElement::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-color: rgba(156, 163, 175, 0.3); /* Default light gray */
+        transition: background-color 0.3s ease;
+    }
+
+    #displayElement::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(156, 163, 175, 0.6);
+    }
+
+    /* --- THEME SPECIFIC OVERRIDES --- */
+
+    /* When in Dark Mode (slate-900) */
+    #displayElement.bg-slate-900::-webkit-scrollbar-thumb {
+        background-color: rgba(51, 65, 85, 1); /* Slate-700 blend */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #displayElement.bg-slate-900::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(71, 85, 105, 1); /* Slate-600 */
+    }
+
+    /* When in Light Mode (white) */
+    #displayElement.bg-white::-webkit-scrollbar-thumb {
+        background-color: rgba(203, 213, 225, 1); /* Slate-300 */
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    #displayElement.bg-white::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(148, 163, 184, 1); /* Slate-400 */
+    }
+</style>
+

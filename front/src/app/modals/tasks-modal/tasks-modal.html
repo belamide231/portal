@@ -1,0 +1,203 @@
+<div class="transition-all absolute h-dvh w-dvw top-0 left-0 flex items-center justify-center p-4 z-250 backdrop-blur-sm" 
+     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-black/70' : 'bg-black/50'">
+    
+    <div class="rounded-lg shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in-up flex flex-col transition-colors duration-300" 
+         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-white'">
+        
+        <div class="px-8 py-5 flex justify-between items-center shrink-0 transition-colors" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-b border-slate-700' : 'background-cec-blue'">
+            <div class="flex items-center gap-4">
+                <img [src]="image.cecLogoPath" alt="CEC Logo" class="h-10 w-10 object-contain rounded-full p-1 shadow-sm transition-colors" 
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-white'">
+                <h2 class="text-white text-xl font-bold tracking-wide">Tasks Overview</h2>
+            </div>
+            
+            <button (click)="navigator.descend(route)" class="cursor-pointer transition-colors" 
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-white' : 'text-white/80 hover:text-white'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-6 pb-6 flex-grow overflow-y-auto max-h-[65vh]">
+            
+            <button (click)="isAddModalCheck.checked = true" class="cursor-pointer w-full mb-4 py-3 rounded-lg border-2 border-dashed flex items-center justify-center gap-2 font-bold transition-all active:scale-[0.98]"
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700 bg-slate-900/30 text-slate-400 hover:border-blue-500 hover:text-blue-400' : 'border-gray-200 bg-gray-50 text-gray-400 hover:border-blue-400 hover:text-blue-600'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                </svg>
+                Add New Task
+            </button>
+
+            <div class="flex flex-col gap-4">
+
+                <div class="flex items-start gap-4 p-4 rounded-lg border-l-4 transition-colors"
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700/30 border-slate-500' : 'bg-gray-50 border-gray-300'">
+                    <div class="shrink-0 rounded-full p-2 bg-slate-200/50 text-slate-500">
+                        <span class="font-black text-xs uppercase tracking-tighter">DFT</span>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-base font-bold transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">
+                                <span class="opacity-40">01.</span> API Mockup Design
+                            </h3>
+                            <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-slate-200 text-slate-600">Drafted</span>
+                        </div>
+                        <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mt-0.5">Backend Development</p>
+                        <p class="text-[10px] opacity-60 mt-2">Period: <span class="font-bold">Prelim</span> • No Points • No Timer</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 p-4 rounded-lg border-l-4 transition-colors"
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-amber-500/5 border-amber-500/50' : 'bg-amber-50/50 border-amber-200'">
+                    <div class="shrink-0 rounded-full p-2 transition-colors" 
+                         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-amber-500/10 text-amber-400' : 'bg-amber-100 text-amber-600'">
+                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-base font-bold transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">
+                                <span class="opacity-40">02.</span> Database Normalization
+                            </h3>
+                            <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-amber-500 text-white">Scheduled</span>
+                        </div>
+                        <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mt-0.5">Data Systems</p>
+                        <div class="mt-2 text-[10px] opacity-60 grid grid-cols-2 gap-2">
+                            <span>Period: <span class="font-bold">Mid-Term</span></span>
+                            <span class="text-right italic">Wait: 2026-05-10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 p-4 rounded-lg border-l-4 transition-colors"
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-emerald-500/5 border-emerald-500/50' : 'bg-emerald-50/50 border-emerald-200'">
+                    <div class="shrink-0 rounded-full p-2 transition-colors" 
+                         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-emerald-100 text-emerald-600'">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-base font-bold transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">
+                                <span class="opacity-40">03.</span> Angular State Lab
+                            </h3>
+                            <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-emerald-500 text-white">Published</span>
+                        </div>
+                        <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mt-0.5">Frontend Dev</p>
+                        <div class="flex justify-between items-center mt-2 text-[10px] font-bold">
+                            <span class="text-emerald-600">Points Enabled</span>
+                            <span class="text-amber-600 flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/></svg>
+                                45m Timer
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 p-4 rounded-lg border-l-4 transition-colors opacity-60"
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-red-500/5 border-red-500/50' : 'bg-red-50/50 border-red-200'">
+                    <div class="shrink-0 rounded-full p-2 transition-colors" 
+                         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-red-500/10 text-red-400' : 'bg-red-100 text-red-500'">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-base font-bold line-through transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-500'">
+                                <span class="opacity-40">04.</span> Legacy Audit
+                            </h3>
+                            <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-red-500 text-white">Closed</span>
+                        </div>
+                        <p class="text-xs font-bold opacity-50 uppercase tracking-widest mt-0.5">Maintenance</p>
+                        <p class="text-[10px] text-red-500 mt-2 font-bold uppercase tracking-tighter">Submissions Locked</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="flex justify-end gap-4 mt-8">
+                <button (click)="navigator.descend(route)" class="px-6 py-2.5 font-medium rounded-md transition-colors cursor-pointer text-base flex items-center" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'">
+                    Cancel
+                </button>
+                <button class="cursor-pointer px-8 py-2.5 rounded-md font-medium shadow-md transition-opacity text-base flex items-center gap-2" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'background-cec-blue hover:opacity-90 text-white'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Refresh Tasks
+                </button>
+            </div>
+        </div>
+        
+        <div class="border-t px-8 py-4 shrink-0 transition-colors" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700' : 'bg-gray-50 border-gray-100'">
+            <p class="text-sm text-center transition-colors" 
+               [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-500'">
+                Need technical help? <a href="https://www.facebook.com/mills.belamide.2024/" class="font-medium hover:underline" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-blue-600'">Reach developer</a>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<input hidden #isAddModalCheck type="checkbox" (change)="0">
+<div [class]="isAddModalCheck.checked === true ? 'opacity-100 pointer-events-auto scale-95' : 'opacity-0 pointer-events-none scale-95' " class="transition-all absolute h-dvh w-dvw top-0 left-0 flex items-center justify-center p-4 z-300 backdrop-blur-md bg-black/40">
+    <div class="rounded-lg shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up flex flex-col transition-colors duration-300" 
+         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-white'">
+        
+        <div class="px-8 py-5 flex justify-between items-center shrink-0 transition-colors" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-b border-slate-700' : 'background-cec-blue'">
+            <div class="flex items-center gap-4">
+                <div class="p-2 bg-white/20 rounded-md backdrop-blur-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                    </svg>
+                </div>
+                <h2 class="text-white text-lg font-bold tracking-wide">New Task</h2>
+            </div>
+        </div>
+
+        <div class="p-8 space-y-6">
+            <div>
+                <label class="block text-sm font-bold mb-2 transition-colors uppercase tracking-widest" 
+                       [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-600'">
+                    Task Name
+                </label>
+                <input type="text" placeholder="Enter task title..."
+                       class="w-full px-4 py-3 rounded-md border-2 transition-all outline-none focus:ring-2"
+                       [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700 text-white focus:ring-blue-500/50' : 'bg-gray-50 border-gray-100 focus:ring-blue-500/30 text-gray-900'">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold mb-2 transition-colors uppercase tracking-widest" 
+                       [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-600'">
+                    Task Category
+                </label>
+                <select class="w-full px-4 py-3 rounded-md border-2 transition-all outline-none focus:ring-2 cursor-pointer"
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700 text-white focus:ring-blue-500/50' : 'bg-gray-50 border-gray-100 focus:ring-blue-500/30 text-gray-900'">
+                    <option value="" disabled selected>Select category</option>
+                    <option value="assignment">Assignment</option>
+                    <option value="attendance">Attendance</option>
+                    <option value="activity">Activity</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-4">
+                <button (click)="isAddModalCheck.checked = false" class="cursor-pointer px-6 py-2.5 font-medium rounded-md transition-colors" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'">
+                    Discard
+                </button>
+                <button class="px-8 py-2.5 rounded-md font-bold shadow-md transition-all" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 hover:bg-blue-500 text-white' : 'background-cec-blue hover:opacity-90 text-white'">
+                    Save Task
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

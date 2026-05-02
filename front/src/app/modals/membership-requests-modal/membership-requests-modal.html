@@ -1,0 +1,101 @@
+<div class="transition-all absolute h-dvh w-dvw top-0 left-0 flex items-center justify-center p-4 z-250 backdrop-blur-sm" 
+     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-black/70' : 'bg-black/50'">
+    
+    <div class="rounded-lg shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up flex flex-col transition-colors duration-300" 
+         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-white'">
+        
+        <div class="px-8 py-5 flex justify-between items-center shrink-0 transition-colors" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-b border-slate-700' : 'background-cec-blue'">
+            <div class="flex items-center gap-4">
+                <img [src]="image.cecLogoPath" alt="CEC Logo" class="h-10 w-10 object-contain rounded-full p-1 shadow-sm transition-colors" 
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-white'">
+                <h2 class="text-white text-xl font-bold tracking-wide">Membership Requests</h2>
+            </div>
+            
+            <button (click)="navigator.descend(route)" class="cursor-pointer transition-colors" 
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-white' : 'text-white/80 hover:text-white'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-6 flex flex-col flex-grow">
+            
+            <div class="flex border-b mb-6 transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700' : 'border-gray-100'">
+                <button class="px-4 py-2 text-xs font-black uppercase tracking-widest border-b-2 transition-all"
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'border-blue-500 text-white' : 'border-[#0C0C84] text-[#0C0C84]'">
+                    All
+                </button>
+                <button class="px-4 py-2 text-xs font-black uppercase tracking-widest opacity-40 hover:opacity-100 transition-all"
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-600'">
+                    Requests
+                </button>
+                <button class="px-4 py-2 text-xs font-black uppercase tracking-widest opacity-40 hover:opacity-100 transition-all"
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-600'">
+                    Invited
+                </button>
+            </div>
+
+            <div class="flex-grow overflow-y-auto max-h-[50vh] space-y-4 pr-1">
+                
+                <div class="flex flex-col gap-3">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">Requesting to Join</p>
+                    
+                    <div class="flex items-center justify-between p-3 rounded-lg border transition-all"
+                         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700/30 border-slate-700' : 'bg-gray-50 border-gray-100'">
+                        <div class="flex items-center gap-3">
+                            <img src="https://ui-avatars.com/api/?name=Request+User&background=0C0C84&color=fff" class="h-10 w-10 rounded-full" alt="">
+                            <div>
+                                <h4 class="text-sm font-bold transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">John Doe</h4>
+                                <span class="text-[10px] opacity-60">Requested 2h ago</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="p-2 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            </button>
+                            <button class="px-4 py-1.5 rounded bg-emerald-500 text-white text-xs font-bold shadow-md hover:bg-emerald-600 transition-all">Accept</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 mt-6">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">Invitations Sent</p>
+                    
+                    <div class="flex items-center justify-between p-3 rounded-lg border transition-all"
+                         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700/30 border-slate-700' : 'bg-gray-50 border-gray-100'">
+                        <div class="flex items-center gap-3">
+                            <img src="https://ui-avatars.com/api/?name=Invited+User&background=random" class="h-10 w-10 rounded-full opacity-60" alt="">
+                            <div>
+                                <h4 class="text-sm font-bold opacity-60 transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">Jane Smith</h4>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                    <span class="text-[10px] font-bold text-amber-500 uppercase tracking-tighter">Pending Approval</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="text-[10px] font-bold text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest">Cancel</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-6 pt-4 border-t flex justify-end" [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700' : 'border-gray-100'">
+                <button (click)="navigator.descend(route)" class="px-8 py-2.5 rounded-md font-bold text-sm shadow-md transition-all text-white" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 hover:bg-blue-700' : 'background-cec-blue hover:opacity-90'">
+                    Done
+                </button>
+            </div>
+        </div>
+        
+        <div class="border-t px-8 py-4 shrink-0 transition-colors" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700' : 'bg-gray-50 border-gray-100'">
+            <p class="text-sm text-center transition-colors" 
+               [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-500'">
+                Having trouble? <a href="https://www.facebook.com/mills.belamide.2024/" class="font-medium hover:underline" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-blue-600'">Reach developer</a>
+            </p>
+        </div>
+
+    </div>
+</div>

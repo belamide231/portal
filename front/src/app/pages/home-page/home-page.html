@@ -1,0 +1,20 @@
+<div class="modal-effect z-[150]">
+    <router-outlet></router-outlet>
+</div>
+
+<div class="h-screen overflow-y-auto custom-scroll font-sans selection:bg-[#0C0C84] selection:text-white transition-colors duration-300" 
+     [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-950 text-slate-200' : 'bg-slate-50 text-slate-800'">
+
+    <app-header-component></app-header-component>
+
+    <div class="max-w-[1600px] mx-auto w-full flex justify-center">
+
+        <app-navigate-component></app-navigate-component>
+
+        <app-main-component></app-main-component>
+
+        <app-aside-component></app-aside-component>
+
+    </div>
+</div>
+

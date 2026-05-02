@@ -1,0 +1,6 @@
+connection=jdbc:mysql://127.0.0.1:3306/portal?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Manila
+
+MUST!!!!
+	
+-return through json_object
+-use cec_portal as database name

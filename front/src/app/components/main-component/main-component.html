@@ -1,0 +1,333 @@
+<main class="w-full max-w-[680px] min-h-[calc(100vh-4rem)] p-4 md:py-8 flex flex-col gap-6">
+    
+    <div *ngIf="router.url.split('/')[1] === 'group'" class="rounded-2xl shadow-sm border flex flex-col transition-shadow duration-300"
+        [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200/60 hover:shadow-md'">
+        
+        <div class="h-32 sm:h-44 w-full relative bg-gradient-to-r from-indigo-500 via-[#0C0C84] to-blue-600 overflow-hidden rounded-t-2xl group">
+            <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+            <svg class="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+                <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M0 40L40 0H20L0 20M40 40V20L20 40" fill="none" stroke="currentColor" stroke-width="2"/></pattern></defs>
+                <rect width="100%" height="100%" fill="url(#grid)" class="text-white"/>
+            </svg>
+            
+            <button class="cursor-pointer absolute top-4 right-4 p-2 rounded-lg bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-colors text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Edit Cover
+            </button>
+        </div>
+
+        <div class="px-5 sm:px-8 pb-5 relative">
+            <div class="absolute -top-12 left-5 sm:left-8 h-24 w-24 rounded-2xl p-1.5 shadow-md"
+                [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900' : 'bg-white'">
+                <div class="h-full w-full rounded-xl border flex items-center justify-center"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-900/20 border-slate-800 text-blue-400' : 'bg-gradient-to-br from-indigo-100 to-blue-50 border-slate-100 text-[#0C0C84]'">
+                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
+                </div>
+            </div>
+
+            <div class="mt-14 sm:mt-16 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex flex-col">
+                    <h2 class="text-2xl font-extrabold tracking-tight"
+                        [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-200' : 'text-slate-900'">BSIT Batch 2026</h2>
+                    <div class="flex items-center gap-3 mt-1.5">
+                        <span class="flex items-center gap-1 text-[13px] font-semibold"
+                            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400' : 'text-slate-500'">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                            Private Group
+                        </span>
+                        <span class="w-1 h-1 rounded-full" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-600' : 'bg-slate-300'"></span>
+                        <span class="text-[13px] font-semibold hover:underline cursor-pointer"
+                            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-700'">
+                            142 Members
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button (click)="navigator.ascend(route, 'leave-group')" class="cursor-pointer flex items-center gap-1.5 px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-sm"
+                            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Joined
+                    </button>
+                    <button (click)="navigator.ascend(route, 'invite-from-group')" class="cursor-pointer flex items-center gap-1.5 px-4 py-2 text-white rounded-lg font-bold text-sm transition-colors shadow-sm hover:shadow-md"
+                            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-[#0C0C84] hover:bg-blue-800'">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Invite
+                    </button>
+
+                    <div class="relative inline-block text-left z-[10]">
+                        <button (click)="groupMenuExtension.focus()" 
+                                class="cursor-pointer flex items-center gap-1.5 px-4 py-2 text-white rounded-lg font-bold text-sm transition-colors shadow-sm hover:shadow-md active:scale-95"
+                                [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-[#0C0C84] hover:bg-blue-800'">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                            </svg>
+                            More
+                        </button>
+
+                        <menu data-name="group-menu-extension"
+                            #groupMenuExtension 
+                            tabindex="-1" 
+                            (click)="$event.stopPropagation()"
+                            class="hidden-extension absolute top-full right-0 mt-3 w-56 overflow-hidden rounded-2xl border shadow-2xl z-[100] 
+                                    transition-all duration-300 transform origin-top-right"
+                            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-800 shadow-black/60' : 'bg-white border-slate-200 shadow-slate-200/40'">
+
+                            <div class="flex flex-col p-2">
+                                <button (click)="navigator.ascend(route, 'create-pool')" class="cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors group"
+                                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-blue-50 text-slate-700'">
+                                    <svg class="w-5 h-5 opacity-70 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="font-bold text-sm">Create Pool</span>
+                                </button>
+
+                                <button (click)="navigator.ascend(route, 'grades')" class="cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors group"
+                                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-blue-50 text-slate-700'">
+                                    <svg class="w-5 h-5 opacity-70 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                                    <span class="font-bold text-sm">Grades</span>
+                                </button>
+
+                                <button (click)="navigator.ascend(route,'tasks')" class="cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors group"
+                                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-blue-50 text-slate-700'">
+                                    <svg class="w-5 h-5 opacity-70 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                                    <span class="font-bold text-sm">Tasks</span>
+                                </button>
+
+                                <hr class="my-2 mx-2 border" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-800' : 'border-slate-100'">
+
+                                <button (click)="navigator.ascend(route, 'edit-group')" class="cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors group"
+                                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-blue-50 text-slate-700'">
+                                    <svg class="w-5 h-5 opacity-70 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                    <span class="font-bold text-sm">Edit Group</span>
+                                </button>
+
+                                <button class="cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors group"
+                                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-red-500/10 text-red-400' : 'hover:bg-red-50 text-red-600'">
+                                    <svg class="w-5 h-5 opacity-80 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    <span class="font-bold text-sm">Drop Group</span>
+                                </button>
+                            </div>
+                        </menu>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 flex items-center gap-3">
+                <div class="flex -space-x-2 overflow-hidden">
+                    <div class="inline-block h-8 w-8 rounded-full ring-2 shadow-sm bg-slate-400" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'ring-slate-900' : 'ring-white'"></div>
+                    <div class="inline-block h-8 w-8 rounded-full ring-2 shadow-sm bg-slate-500" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'ring-slate-900' : 'ring-white'"></div>
+                    <div class="inline-block h-8 w-8 rounded-full ring-2 shadow-sm bg-slate-600" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'ring-slate-900' : 'ring-white'"></div>
+                </div>
+                <span class="text-[13px] font-medium" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400' : 'text-slate-500'">Alex and 5 others joined recently.</span>
+            </div>
+        </div>
+        
+        <div class="px-5 sm:px-8 border-t flex gap-6 mt-1 rounded-b-2xl" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-800' : 'border-slate-100'">
+            <button class="cursor-pointer py-4 border-b-2 font-bold text-sm" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'border-blue-400 text-blue-400' : 'border-[#0C0C84] text-[#0C0C84]'">Discussion</button>
+            <button (click)="navigator.ascend(route, 'group-members')" class="cursor-pointer py-4 border-b-2 border-transparent font-semibold text-sm transition-colors text-slate-500">Members</button>
+        </div>
+    </div>
+
+    <div class="rounded-2xl shadow-sm border p-5 transition-shadow duration-300"
+            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200/60'">
+        <div class="flex gap-3 items-center">
+
+            <div data-name="avatar" class="h-11 w-11 shrink-0 bg-gradient-to-tr from-[#0C0C84] to-blue-500 rounded-full shadow-inner ring-2 overflow-hidden"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'ring-slate-900' : 'ring-white'">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+                    <circle cx="200" cy="200" r="200" [attr.fill]="(theme.isDarkMode$ | async) === '1' ? '#1e293b' : '#E2E8F0'" />
+                    <g transform="translate(0, 15)">
+                        <path d="M 50 400 C 50 250, 100 240, 200 240 C 300 240, 350 250, 350 400 Z" 
+                            [attr.fill]="(theme.isDarkMode$ | async) === '1' ? '#60a5fa' : '#0C0C84'" />
+                        
+                        <path d="M 120 240 L 170 220 L 200 290 L 140 300 Z" fill="#000" fill-opacity="0.2" />
+                        <path d="M 280 240 L 230 220 L 200 290 L 260 300 Z" fill="#000" fill-opacity="0.2" />
+                        <path d="M 155 230 L 200 280 L 245 230 Z" fill="#FFFFFF" />
+                        <rect x="170" y="160" width="60" height="80" rx="15" fill="#E2A69A" />
+                        <path d="M 160 225 C 180 300, 220 300, 240 225" fill="none" stroke="#F59E0B" stroke-width="6" stroke-linecap="round" />
+                        <rect x="175" y="300" width="50" height="70" rx="4" fill="#FFFFFF" />
+                        <path d="M 175 304 C 175 302, 177 300, 179 300 L 221 300 C 223 300, 225 302, 225 304 L 225 315 L 175 315 Z" 
+                            [attr.fill]="(theme.isDarkMode$ | async) === '1' ? '#60a5fa' : '#0C0C84'" />
+                        <rect x="130" y="70" width="140" height="160" rx="70" fill="#FAD6C6" />
+                    </g>
+                </svg>
+
+            </div>
+            
+            <input type="text" placeholder="Share an update to the portal..." class="w-full rounded-full px-5 py-3 outline-none cursor-pointer text-sm font-medium transition-colors focus:ring-2 focus:ring-[#0C0C84]/20"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 text-slate-200 hover:bg-slate-700 placeholder-slate-400 focus:bg-slate-900' : 'bg-slate-100 text-slate-700 hover:bg-slate-200/70 focus:bg-white'">
+        </div>
+        <hr class="my-4 border" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-800' : 'border-slate-100'">
+        <div class="flex justify-between items-center px-1">
+            <button class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl font-semibold text-sm group transition-colors"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400 hover:bg-emerald-900/20 hover:text-emerald-400' : 'text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-emerald-400' : 'text-emerald-500'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                Photo / Document
+            </button>
+            <button class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl font-semibold text-sm group transition-colors"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400 hover:bg-blue-900/20 hover:text-blue-400' : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700'">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-blue-500'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                Attach Code
+            </button>
+        </div>
+    </div>
+
+    <div class="rounded-2xl shadow-sm border flex flex-col transition-shadow duration-300"
+            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200/60'">
+        <div class="p-5 flex items-start justify-between">
+            <div class="flex gap-4 items-center">
+                <div class="h-11 w-11 shrink-0 bg-slate-800 rounded-full shadow-md flex items-center justify-center">
+                    <span class="text-white font-bold text-sm">IT</span>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-sm cursor-pointer hover:underline transition-colors"
+                        [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-200 hover:text-blue-400' : 'text-slate-900 hover:text-[#0C0C84]'">IT Department Admin</h3>
+                    <span class="text-[13px] flex items-center gap-1.5 font-medium mt-0.5"
+                            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400' : 'text-slate-500'">
+                        2 hours ago
+                        <span class="w-1 h-1 rounded-full" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-600' : 'bg-slate-300'"></span>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd"></path></svg>
+                    </span>
+                </div>
+            </div>
+            <button class="p-2 rounded-full transition-colors"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-slate-500 hover:text-slate-300' : 'hover:bg-slate-100 text-slate-400 hover:text-slate-600'">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+            </button>
+        </div>
+
+        <div class="px-5 pb-4 text-[15px] leading-relaxed font-medium"
+                [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-300' : 'text-slate-800'">
+            Reminder: Final Capstone Defense schedules have been posted. Please check the portal directory to confirm your assigned time slot and panel members. Good luck! 🎓
+        </div>
+
+        <div class="px-5 py-3 flex items-center justify-between text-[13px] font-semibold border-b"
+                [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400 border-slate-800' : 'text-slate-500 border-slate-100'">
+            <div class="flex items-center gap-1.5 cursor-pointer transition-colors"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:text-blue-400' : 'hover:text-blue-600'">
+                <div class="h-5 w-5 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 shadow-sm border flex items-center justify-center text-white"
+                        [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-800' : 'border-white'">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path></svg>
+                </div>
+                <span>42 Acknowledgements</span>
+            </div>
+            <span class="cursor-pointer hover:underline transition-all"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:text-slate-300' : 'hover:text-slate-700'">5 Comments</span>
+        </div>
+
+        <div class="px-2 py-1.5 flex justify-between items-center rounded-b-2xl"
+                [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800/50' : 'bg-slate-50/50'">
+            <button class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl font-bold text-[13px] tracking-wide transition-colors"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-slate-400 hover:text-blue-400' : 'hover:bg-slate-200/50 text-slate-600 hover:text-[#0C0C84]'">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+                Acknowledge
+            </button>
+            <button class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl font-bold text-[13px] tracking-wide transition-colors"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-slate-400 hover:text-slate-200' : 'hover:bg-slate-200/50 text-slate-600 hover:text-slate-900'">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                Comment
+            </button>
+        </div>
+    </div>
+
+    <div class="rounded-2xl shadow-sm border flex flex-col transition-shadow duration-300"
+            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200/60'">
+        <div class="p-5 flex items-start justify-between">
+            <div class="flex gap-4 items-center">
+                <div class="h-11 w-11 shrink-0 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-bold shadow-md">
+                    MB
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-sm cursor-pointer hover:underline transition-colors"
+                        [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-200 hover:text-blue-400' : 'text-slate-900 hover:text-[#0C0C84]'">Mills Belamide</h3>
+                    <span class="text-[13px] flex items-center gap-1.5 font-medium mt-0.5"
+                            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400' : 'text-slate-500'">
+                        15 minutes ago
+                        <span class="w-1 h-1 rounded-full bg-blue-500"></span>
+                        <span class="text-blue-500 font-bold">Public</span>
+                    </span>
+                </div>
+            </div>
+            <button class="p-2 rounded-full transition-colors" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-slate-500' : 'hover:bg-slate-100 text-slate-400'">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+            </button>
+        </div>
+
+        <div class="px-5 pb-4 text-[15px] leading-relaxed font-medium" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-300' : 'text-slate-800'">
+            Anyone else running into SignalR connection timeouts with .NET 9? I've checked the CORS policy but the socket keeps dropping on the Angular side. 👨‍💻
+        </div>
+
+        <div class="mx-5 mb-4 p-4 rounded-xl font-mono text-xs overflow-x-auto border"
+            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-950 border-slate-800 text-blue-300' : 'bg-slate-50 border-slate-200 text-blue-700'">
+            hubConnection.start().catch(err => console.error(err));
+        </div>
+
+        <div class="px-5 py-3 flex items-center justify-between text-[13px] font-semibold border-b"
+                [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400 border-slate-800' : 'text-slate-500 border-slate-100'">
+            <span>12 Acknowledge</span>
+            <span>8 Comments</span>
+        </div>
+
+        <div class="px-2 py-1.5 flex justify-between items-center rounded-b-2xl" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800/50' : 'bg-slate-50/50'">
+            <button class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl font-bold text-[13px] transition-colors"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-slate-400 hover:text-blue-400' : 'hover:bg-slate-200/50 text-slate-600 hover:text-[#0C0C84]'">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+                Acknowledge
+            </button>
+            <button class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl font-bold text-[13px] transition-colors"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-slate-400' : 'hover:bg-slate-200/50 text-slate-600'">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                Comment
+            </button>
+        </div>
+    </div>
+
+    <div class="rounded-2xl shadow-sm border flex flex-col transition-shadow duration-300"
+            [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200/60'">
+        <div class="p-5 flex items-start justify-between">
+            <div class="flex gap-4 items-center">
+                <div class="h-11 w-11 shrink-0 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-md overflow-hidden border-2 border-white">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
+                </div>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-sm" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-200' : 'text-slate-900'">CEC Game Dev Club</h3>
+                    <span class="text-[13px] font-medium mt-0.5" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400' : 'text-slate-500'">Yesterday at 4:30 PM</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-5 pb-4 text-[15px] leading-relaxed font-medium" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-300' : 'text-slate-800'">
+            Our weekend Game Jam is finally here! We'll be focusing on building sandbox battle simulators. Pizza and snacks will be provided at the IT Lab. See you there! 🕹️🍕
+        </div>
+
+        <div class="w-full h-64 bg-slate-200 relative overflow-hidden flex items-center justify-center" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-slate-100'">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+            <div class="z-20 text-white text-center">
+                <h4 class="text-xl font-black uppercase tracking-tighter">Weekend Game Jam</h4>
+                <p class="text-xs font-bold opacity-80 uppercase">Cebu Eastern College - IT Lab</p>
+            </div>
+            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=1000" class="w-full h-full object-cover grayscale-[20%]" alt="Game Dev Event">
+        </div>
+
+        <div class="px-5 py-3 flex items-center justify-between text-[13px] font-semibold border-b"
+                [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400 border-slate-800' : 'text-slate-500 border-slate-100'">
+            <span>85 interested</span>
+            <span>14 comments</span>
+        </div>
+
+        <div class="px-2 py-1.5 flex justify-between items-center rounded-b-2xl" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800/50' : 'bg-slate-50/50'">
+            <button class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl font-bold text-[13px] transition-colors"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-blue-400' : 'hover:bg-slate-200/50 text-[#0C0C84]'">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                I'm Interested
+            </button>
+            <button class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl font-bold text-[13px] transition-colors"
+                    [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800 text-slate-400' : 'hover:bg-slate-200/50 text-slate-600'">
+                <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                Learn More
+            </button>
+        </div>
+    </div>
+
+</main>

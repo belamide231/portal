@@ -1,0 +1,150 @@
+<div class="transition-all absolute h-dvh w-dvw top-0 left-0 flex items-center justify-center p-4 z-150 backdrop-blur-sm" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-black/70' : 'bg-black/50'">
+    
+    <div class="rounded-lg shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in-up flex flex-col transition-colors duration-300" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-white'">
+        
+        <div class="px-8 py-5 flex justify-between items-center shrink-0 transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-b border-slate-700' : 'background-cec-blue'">
+            <div class="flex items-center gap-4">
+                <img [src]="image.cecLogoPath" alt="CEC Logo" class="h-10 w-10 object-contain rounded-full p-1 shadow-sm transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-white'">
+                <h2 class="text-white text-2xl font-bold tracking-wide">Account Recovery</h2>
+            </div>
+            
+            <button (click)="navigator.descend(route)" class="cursor-pointer transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-white' : 'text-white/80 hover:text-white'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-8 pb-6 flex-grow">
+            <div class="mb-8">
+                <p class="text-base leading-relaxed mb-3 transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300' : 'text-gray-600'">
+                    Enter your registered <strong [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : ''">Gmail</strong> or <strong [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : ''">Username</strong>. We will search the Cebu Eastern Portal database to find your account.
+                </p>
+                <p class="text-sm leading-relaxed border-l-4 pl-3 transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 border-blue-500/50' : 'text-gray-500 border-blue-200'">
+                    If a match is found, we will send a secure recovery link to the email address associated with your profile.
+                </p>
+            </div>
+
+            <div class="mb-4">
+                <label for="recoveryId" class="flex items-center gap-2 text-base font-semibold mb-2 transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-200' : 'text-gray-700'">
+                    <img [src]="image.gmailLogoPath" alt="Gmail" class="h-5 w-5 object-contain">
+                    Gmail or Username
+                </label>
+                <input 
+                    #input
+                    type="text" 
+                    id="recoveryId" 
+                    class="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 transition-all text-base"
+                    autocomplete="off"
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400 focus:ring-blue-500/40 focus:border-blue-400' : 'bg-white border-gray-300 text-gray-900 focus:ring-blue-500/50 focus:border-blue-500'"
+                    placeholder="e.g., student@gmail.com or mills_dev"
+                >
+                <p class="mt-2 text-xs font-medium transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-400'">Please ensure you have access to your inbox before proceeding.</p>
+            </div>
+
+            <div class="flex justify-end gap-4 mt-10">
+                <button (click)="router.navigate(['../'])" class="px-6 py-2.5 font-medium rounded-md transition-colors cursor-pointer text-base flex items-center" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'">
+                    Cancel
+                </button>
+                <button (click)="input.value !== '' ? recoverAccount(input.value) : null" class="cursor-pointer text-white px-8 py-2.5 rounded-md font-medium shadow-md transition-opacity text-base" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 hover:bg-blue-700' : 'background-cec-blue hover:opacity-90'">
+                    Find Account
+                </button>
+            </div>
+        </div>
+        
+        <div class="border-t px-8 py-4 shrink-0 transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700' : 'bg-gray-50 border-gray-100'">
+            <p class="text-sm text-center transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-500'">
+                Having trouble? <a href="https://www.facebook.com/mills.belamide.2024/" class="font-medium hover:underline" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-blue-600'">Reach developer</a>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+
+<div *ngIf="isLoading" class="fixed inset-0 z-[200] flex items-center justify-center backdrop-blur-sm transition-opacity" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900/80' : 'bg-white/50'">
+    
+    <div class="flex flex-col items-center gap-5">
+        <div class="relative flex items-center justify-center h-24 w-24">
+            <div class="absolute inset-0 rounded-full border-4 shadow-md animate-spin" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700 border-t-blue-400' : 'border-gray-100 border-t-[#0C0C84]'"></div>
+            <img [src]="image.cecLogoPath" alt="Loading..." class="h-12 w-12 object-contain animate-pulse" />
+        </div>
+
+        <span class="text-sm font-bold tracking-[0.2em] uppercase animate-pulse" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-[#0C0C84]'">
+            Loading
+        </span>
+    </div>
+
+</div>
+
+<div *ngIf="message !== ''" tabindex="-1" class="fixed inset-0 z-[250] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    
+    <div class="relative w-full max-w-md overflow-hidden rounded-2xl p-8 text-center shadow-2xl flex flex-col items-center gap-6 animate-in fade-in zoom-in duration-200" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-white'">
+        
+        <div class="rounded-full p-4 shadow-sm border" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-gray-100'">
+            <img [src]="image.cecLogoPath" alt="CEC Logo" class="h-16 w-16 object-contain" />
+        </div>
+
+        <div *ngIf="message === 'Username or Gmail did not exists'" class="w-full flex flex-col items-center gap-5">
+            <div class="rounded-full p-4" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-red-500/10 text-red-400' : 'bg-red-50 text-red-500'">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+            </div>
+            
+            <div class="space-y-2">
+                <h3 class="text-xl font-bold" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">User Not Found</h3>
+                <p class="text-sm font-medium leading-relaxed" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300' : 'text-gray-500'">
+                    {{ message }}. Please check the username and try again.
+                </p>
+            </div>
+
+            <button (click)="message = ''" class="mt-2 w-full rounded-xl px-4 py-3.5 text-sm font-semibold transition-colors focus:ring-4" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 text-white hover:bg-slate-600 focus:ring-slate-600/50' : 'bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-gray-200'">
+                Try Again
+            </button>
+        </div>
+
+        <div *ngIf="message === 'We sent you an email for your account recovery'" class="w-full flex flex-col items-center gap-5">
+            <div class="rounded-full p-4" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-green-500/10 text-green-400' : 'bg-green-50 text-green-500'">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+            </div>
+            
+            <div class="space-y-2">
+                <h3 class="text-xl font-bold" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">Success</h3>
+                <p class="text-sm font-medium leading-relaxed" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300' : 'text-gray-500'">
+                    {{ message }}
+                </p>
+            </div>
+
+            <button (click)="navigateGmail()" class="mt-2 w-full flex flex-row justify-center rounded-xl px-4 py-3.5 text-sm font-semibold transition-colors focus:ring-4" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 text-white hover:bg-slate-600 focus:ring-slate-600/50' : 'bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-gray-200'">
+                <img [src]="image.gmailLogoPath" alt="Gmail" class="h-5 w-5 object-contain">
+                Proceed to Gmail 
+            </button>
+        </div>
+
+        <div *ngIf="message === 'Unable to connect to the server. Please check your internet connection.'" class="w-full flex flex-col items-center gap-5">
+            
+            <div class="rounded-full p-4" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 text-slate-300' : 'bg-slate-100 text-slate-500'">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18m-3.465-4.536a7.5 7.5 0 00-10.07 0m12.44-2.828a11.25 11.25 0 00-14.81 0m17.51-2.923a15 15 0 00-20.22 0" />
+                    <circle cx="12" cy="18" r="1.5" fill="currentColor" stroke="none" />
+                </svg>
+            </div>
+            
+            <div class="space-y-2 text-center">
+                <h3 class="text-xl font-bold" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">Connection Error</h3>
+                <p class="text-sm font-medium leading-relaxed" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300' : 'text-gray-500'">
+                    {{ message }}
+                </p>
+            </div>
+
+            <button (click)="message = ''" class="mt-2 w-full rounded-xl px-4 py-3.5 text-sm font-semibold transition-colors focus:ring-4" [ngClass]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 text-white hover:bg-slate-600 focus:ring-slate-600/50' : 'bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-gray-200'">
+                Dismiss
+            </button>
+
+        </div>
+        
+    </div>
+</div>

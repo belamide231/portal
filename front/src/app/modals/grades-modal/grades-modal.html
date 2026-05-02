@@ -1,0 +1,156 @@
+<div class="transition-all absolute h-dvh w-dvw top-0 left-0 flex items-center justify-center z-100 backdrop-blur-sm py-2 px-2 md:px-15 md:py-7.5 lg:px-30 lg:py-10" 
+     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-black/70' : 'bg-black/50'">
+
+    <div class="h-[100%] w-[100%] flex flex-col rounded-xl shadow-2xl overflow-hidden border transition-colors duration-300"
+         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700' : 'bg-white border-gray-200'">
+
+        <div class="px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-b shrink-0 transition-colors"
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-950 border-slate-700' : 'bg-white border-gray-200'">
+            
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 rounded bg-green-600 text-white shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1H3a1 1 0 01-1-1v-2zm7 0a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1h-2a1 1 0 01-1-1v-2zm7 0a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1h-2a1 1 0 01-1-1v-2z" /></svg>
+                    </div>
+                    <h2 class="text-xl font-black tracking-tight transition-colors" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-800'">
+                        Grade Master <span class="font-normal opacity-50 ml-1">/ BSIT 2026</span>
+                    </h2>
+                </div>
+
+                <div class="flex p-1 rounded-lg transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-gray-100'">
+                    <button class="px-4 py-1 text-[10px] font-black uppercase rounded transition-all bg-white dark:bg-slate-700 shadow-sm" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-[#0C0C84]'">Prelim</button>
+                    <button class="px-4 py-1 text-[10px] font-black uppercase rounded opacity-50 hover:opacity-100 transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-600'">Midterm</button>
+                    <button class="px-4 py-1 text-[10px] font-black uppercase rounded opacity-50 hover:opacity-100 transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-600'">Semi-Finals</button>
+                    <button class="px-4 py-1 text-[10px] font-black uppercase rounded opacity-50 hover:opacity-100 transition-all" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-600'">Finals</button>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all"
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-emerald-50 border-emerald-100 text-emerald-600'">
+                    <div class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-widest">Auto-Saved</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-md border-2 border-emerald-500/20 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        Sync
+                    </button>
+                    <button class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-md background-cec-blue text-white shadow-lg shadow-blue-900/30 hover:opacity-90 transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        Distribute
+                    </button>
+                    <button (click)="navigator.descend(route)" class="p-1.5 ml-2 rounded-full hover:bg-red-500 hover:text-white transition-all text-gray-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-6 py-3 flex items-center justify-between border-b shrink-0 transition-colors"
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800/50 border-slate-700' : 'bg-gray-50 border-gray-200'">
+            
+            <div class="flex items-center gap-3">
+                <span class="text-[10px] font-black uppercase tracking-widest opacity-60" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">Table:</span>
+                <select class="px-4 py-1.5 rounded border text-xs font-bold uppercase outline-none transition-all cursor-pointer"
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-800'">
+                    <option value="assignments">Assignments</option>
+                    <option value="activities">Activities</option>
+                    <option value="projects">Projects</option>
+                </select>
+            </div>
+
+            <div class="flex gap-2">
+                <button class="text-[9px] font-black uppercase px-3 py-2 rounded transition-all border hover:scale-105"
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-700 shadow-sm'">
+                    + New Column
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-grow overflow-auto transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-950' : 'bg-slate-50/50'">
+            <table class="w-full border-collapse min-w-[1200px]">
+                <thead class="sticky top-0 z-20">
+                    <tr [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-gray-100'">
+                        <th class="w-12 border border-slate-700/50 text-[10px] font-black text-slate-400">#</th>
+                        <th class="px-4 py-3 border border-slate-700/50 text-left text-xs font-black uppercase tracking-widest text-blue-500 w-64">Student Name</th>
+                        
+                        <th *ngFor="let task of [{no: '01', synced: true}, {no: '02', synced: true}, {no: '03', synced: false}]" 
+                            class="px-4 py-3 border border-slate-700/50 min-w-[140px]">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-black uppercase tracking-widest"
+                                      [class]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-300' : 'text-gray-600'">Task {{task.no}}</span>
+                                <svg *ngIf="task.synced" class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                <svg *ngIf="!task.synced" class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            </div>
+                        </th>
+                        <th class="px-4 py-3 border border-slate-700/50 text-left text-xs font-black uppercase tracking-widest text-emerald-600 w-32">Total Grade</th>
+                    </tr>
+
+                    <tr [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900' : 'bg-white'">
+                        <td class="border border-slate-700/50" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800/20' : 'bg-gray-50'"></td>
+                        <td class="px-4 py-2 border border-slate-700/50">
+                            <div class="flex flex-col gap-1 text-[9px] font-black uppercase tracking-widest">
+                                <span class="text-amber-500">Weightage</span>
+                                <span class="text-blue-500">Max Score</span>
+                            </div>
+                        </td>
+                        <td *ngFor="let m of [100, 100, 50]" class="p-0 border border-slate-700/50">
+                            <div class="flex flex-col">
+                                <input type="text" value="20%" class="w-full px-4 py-1 bg-amber-500/5 text-amber-600 font-bold text-[10px] outline-none text-center border-b border-slate-700/50">
+                                <input type="number" [value]="m" class="w-full px-4 py-1 bg-blue-500/5 text-blue-600 font-bold text-[10px] outline-none text-center">
+                            </div>
+                        </td>
+                        <td class="border border-slate-700/50 bg-emerald-500/5 text-center text-[10px] font-black text-emerald-600 uppercase">Calculated</td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" 
+                        class="group transition-colors border-b"
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-800/40 border-slate-800' : 'hover:bg-blue-50/50 border-gray-100'">
+                        
+                        <td class="border-r border-slate-700/50 text-center text-[10px] font-bold"
+                            [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800/40 text-slate-500' : 'bg-gray-50 text-gray-400'">
+                            {{i}}
+                        </td>
+                        
+                        <td class="border-r border-slate-700/50 p-0">
+                            <input type="text" placeholder="Enter name..." 
+                                   class="w-full px-4 py-3 bg-transparent outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500/50 text-sm font-medium transition-all"
+                                   [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">
+                        </td>
+
+                        <td *ngFor="let score of [1,2,3]" class="border-r border-slate-700/50 p-0 text-center">
+                            <input type="number" placeholder="0" 
+                                   class="w-full px-4 py-3 bg-transparent outline-none text-center text-sm focus:ring-2 focus:ring-inset focus:ring-blue-500/50 transition-all"
+                                   [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">
+                        </td>
+
+                        <td class="bg-emerald-500/5 p-0 text-center text-emerald-600 font-black text-sm">0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="px-6 py-3 border-t flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.2em] shrink-0 transition-colors"
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700 text-slate-500' : 'bg-gray-50 border-gray-100 text-gray-500'">
+            <div class="flex gap-6">
+                <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Connected: BSIT Master Database</span>
+                <span>Category Count: 3</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1.5 italic" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-emerald-500' : 'text-emerald-600'">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> 
+                    Last saved: 11:39 PM
+                </span>
+                <span>Build v3.4.8</span>
+            </div>
+        </div>
+    </div>
+</div>

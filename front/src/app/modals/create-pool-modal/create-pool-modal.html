@@ -1,0 +1,80 @@
+<div class="transition-all absolute h-dvh w-dvw top-0 left-0 flex items-center justify-center p-4 z-250 backdrop-blur-sm" 
+     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-black/70' : 'bg-black/50'">
+    
+    <div class="rounded-lg shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up flex flex-col transition-colors duration-300" 
+         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-white'">
+        
+        <div class="px-8 py-5 flex justify-between items-center shrink-0 transition-colors" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-b border-slate-700' : 'background-cec-blue'">
+            <div class="flex items-center gap-4">
+                <img [src]="image.cecLogoPath" alt="CEC Logo" class="h-10 w-10 object-contain rounded-full p-1 shadow-sm transition-colors" 
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-white'">
+                <h2 class="text-white text-xl font-bold tracking-wide">Create Poll</h2>
+            </div>
+            
+            <button (click)="navigator.descend(route)" class="cursor-pointer transition-colors" 
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-white' : 'text-white/80 hover:text-white'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-8 pb-6 flex-grow overflow-y-auto max-h-[70vh]">
+            
+            <div class="mb-6">
+                <label class="block text-xs font-black uppercase tracking-widest mb-2" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-500'">Question</label>
+                <textarea placeholder="What's on your mind?" rows="2"
+                    class="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 transition-all text-base font-medium resize-none"
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 border-slate-600 text-white focus:ring-blue-500/40' : 'bg-gray-50 border-gray-200 text-gray-900 focus:ring-blue-500/30'"></textarea>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <label class="block text-xs font-black uppercase tracking-widest mb-1" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-500'">Options</label>
+                
+                <div *ngFor="let i of [1, 2]" class="relative group">
+                    <input type="text" [placeholder]="'Option ' + i"
+                        class="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 transition-all pr-10"
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700 text-white focus:ring-blue-500/20' : 'bg-white border-gray-200 text-gray-900 focus:ring-blue-500/20'">
+                    <button class="absolute right-3 top-3.5 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <button class="w-full py-3 border-2 border-dashed rounded-md font-bold text-sm transition-all hover:border-blue-500/50"
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700 text-slate-400 hover:bg-slate-700/50' : 'border-gray-200 text-gray-500 hover:bg-gray-50'">
+                    + Add Option
+                </button>
+            </div>
+
+            <div class="py-4 border-t border-b border-dashed mb-6" [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-700' : 'border-gray-200'">
+                <label class="flex items-center justify-between cursor-pointer group">
+                    <span class="text-sm font-bold" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300' : 'text-gray-700'">Allow multiple answers</span>
+                    <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 transition-all cursor-pointer">
+                </label>
+            </div>
+
+            <div class="flex justify-end gap-4">
+                <button (click)="navigator.descend(route)" class="px-6 py-2.5 font-medium rounded-md transition-colors cursor-pointer text-base" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'">
+                    Cancel
+                </button>
+                <button class="cursor-pointer px-10 py-2.5 rounded-md font-bold shadow-md transition-all text-base text-white" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 hover:bg-blue-500' : 'background-cec-blue hover:opacity-90'">
+                    Post Poll
+                </button>
+            </div>
+        </div>
+        
+        <div class="border-t px-8 py-4 shrink-0 transition-colors" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700' : 'bg-gray-50 border-gray-100'">
+            <p class="text-sm text-center transition-colors" 
+               [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-500'">
+                Having trouble? <a href="https://www.facebook.com/mills.belamide.2024/" class="font-medium hover:underline" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-blue-600'">Reach developer</a>
+            </p>
+        </div>
+
+    </div>
+</div>

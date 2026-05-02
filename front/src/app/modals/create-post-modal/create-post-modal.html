@@ -1,0 +1,124 @@
+<div class="transition-all absolute h-dvh w-dvw top-0 left-0 flex items-center justify-center p-4 z-150 backdrop-blur-sm" 
+     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-black/70' : 'bg-black/50'">
+    
+    <div class="rounded-lg shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in-up flex flex-col transition-colors duration-300 max-h-[95dvh]" 
+         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-white'">
+        
+        <div class="px-6 py-4 flex justify-between items-center shrink-0 transition-colors relative" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-b border-slate-700' : 'background-cec-blue'">
+            
+            <div class="w-8"></div> 
+            
+            <h2 class="text-white text-xl font-bold tracking-wide text-center">Create Post</h2>
+            
+            <button (click)="navigator.descend(route)" class="cursor-pointer transition-colors w-8 flex justify-end" 
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-white' : 'text-white/80 hover:text-white'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 bg-white/10 rounded-full p-1 hover:bg-white/20 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-6 pb-6 flex-grow overflow-y-auto custom-scrollbar flex flex-col">
+
+            <div class="flex items-center gap-3 mb-4">
+
+                <div data-name="avatar" class="h-11 w-11 rounded-full overflow-hidden shadow-inner flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+                        <circle cx="200" cy="200" r="200" [attr.fill]="(theme.isDarkMode$ | async) === '1' ? '#1e293b' : '#E2E8F0'" />
+                        <g transform="translate(0, 15)">
+                            <path d="M 50 400 C 50 250, 100 240, 200 240 C 300 240, 350 250, 350 400 Z" 
+                                [attr.fill]="(theme.isDarkMode$ | async) === '1' ? '#60a5fa' : '#0C0C84'" />
+                            
+                            <path d="M 120 240 L 170 220 L 200 290 L 140 300 Z" fill="#000" fill-opacity="0.2" />
+                            <path d="M 280 240 L 230 220 L 200 290 L 260 300 Z" fill="#000" fill-opacity="0.2" />
+                            <path d="M 155 230 L 200 280 L 245 230 Z" fill="#FFFFFF" />
+                            <rect x="170" y="160" width="60" height="80" rx="15" fill="#E2A69A" />
+                            <path d="M 160 225 C 180 300, 220 300, 240 225" fill="none" stroke="#F59E0B" stroke-width="6" stroke-linecap="round" />
+                            <rect x="175" y="300" width="50" height="70" rx="4" fill="#FFFFFF" />
+                            <path d="M 175 304 C 175 302, 177 300, 179 300 L 221 300 C 223 300, 225 302, 225 304 L 225 315 L 175 315 Z" 
+                                [attr.fill]="(theme.isDarkMode$ | async) === '1' ? '#60a5fa' : '#0C0C84'" />
+                            <rect x="130" y="70" width="140" height="160" rx="70" fill="#FAD6C6" />
+                        </g>
+                    </svg>
+                </div>
+
+                <div class="flex flex-col">
+                    <span class="font-bold text-base transition-colors" 
+                          [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-100' : 'text-gray-900'">
+                        Mills Belamide B. </span>
+                    <button class="flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded transition-colors mt-0.5 cursor-pointer w-fit"
+                            [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-700 text-gray-300 hover:bg-slate-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd" />
+                        </svg>
+                        Public
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <textarea #postContent rows="5" 
+                      class="w-full resize-none text-xl focus:outline-none bg-transparent transition-colors custom-scrollbar placeholder:font-normal"
+                      [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'"
+                      placeholder="What's on your mind?"></textarea>
+
+            <div class="mt-6 flex items-center justify-between border rounded-lg p-3 transition-colors shadow-sm"
+                 [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-600 bg-slate-700/30' : 'border-gray-300 bg-white'">
+                <span class="font-semibold text-sm transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-200' : 'text-gray-700'">
+                    Add to your post
+                </span>
+                
+                <div class="flex gap-1">
+                    <button class="p-2 rounded-full transition-colors cursor-pointer" [class]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-600' : 'hover:bg-gray-100'">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </button>
+                    <button class="p-2 rounded-full transition-colors cursor-pointer" [class]="(theme.isDarkMode$ | async) === '1' ? 'hover:bg-slate-600' : 'hover:bg-gray-100'">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <button [disabled]="!postContent.value.trim()" 
+                    class="w-full mt-4 cursor-pointer text-white px-8 py-2.5 rounded-md font-bold shadow-md transition-all text-base disabled:opacity-50 disabled:cursor-not-allowed" 
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 hover:bg-blue-700 disabled:hover:bg-blue-600' : 'background-cec-blue hover:opacity-90 disabled:hover:opacity-100'">
+                Post
+            </button>
+            
+        </div>
+
+        <div class="border-t px-8 py-3 shrink-0 transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700' : 'bg-gray-50 border-gray-100'">
+            <p class="text-xs text-center transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-500'">
+                Need technical help? <a href="https://www.facebook.com/mills.belamide.2024/" class="font-medium hover:underline" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-blue-600'">Reach developer</a>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Sleek Custom Scrollbar for both Light & Dark modes */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: rgba(156, 163, 175, 0.4);
+        border-radius: 10px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(107, 114, 128, 0.7);
+    }
+</style>

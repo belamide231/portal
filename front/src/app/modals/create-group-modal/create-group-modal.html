@@ -1,0 +1,113 @@
+<div class="transition-all absolute h-dvh w-dvw top-0 left-0 flex items-center justify-center p-4 z-150 backdrop-blur-sm" 
+     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-black/70' : 'bg-black/50'">
+    
+    <div class="rounded-lg shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in-up flex flex-col transition-colors duration-300 max-h-[95dvh]" 
+         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-white'">
+        
+        <div class="px-6 py-4 flex justify-between items-center shrink-0 transition-colors relative" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-b border-slate-700' : 'background-cec-blue'">
+            
+            <div class="w-8"></div> 
+            
+            <h2 class="text-white text-xl font-bold tracking-wide text-center">Create New</h2>
+            
+            <button (click)="navigator.descend(route)" class="cursor-pointer transition-colors w-8 flex justify-end" 
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-white' : 'text-white/80 hover:text-white'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 bg-white/10 rounded-full p-1 hover:bg-white/20 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-6 pb-6 flex-grow overflow-y-auto custom-scrollbar flex flex-col">
+            
+            <div class="flex flex-col gap-2 mb-6 shrink-0">
+                <label class="text-sm font-bold uppercase tracking-wider" 
+                       [class]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400' : 'text-slate-500'">
+                    Name
+                </label>
+                <input #groupName type="text" maxlength="99" placeholder="Enter group or class name..."
+                       class="w-full rounded-xl px-4 py-3 outline-none text-base border transition-all focus:ring-2"
+                       [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900/50 border-slate-600 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-blue-500/20' : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-[#0C0C84] focus:ring-[#0C0C84]/10'">
+                <div class="text-right text-xs mt-1 font-medium" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-500' : 'text-slate-400'">
+                    {{ groupName.value.length }} / 99
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2 mb-6 shrink-0">
+                <label class="text-sm font-bold uppercase tracking-wider" 
+                       [class]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400' : 'text-slate-500'">
+                    Type
+                </label>
+                
+                <div class="flex gap-3">
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="groupType" value="group" class="peer hidden" checked>
+                        <div class="flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all"
+                             [class]="(theme.isDarkMode$ | async) === '1' 
+                                ? 'border-slate-700 bg-slate-800 text-slate-400 peer-checked:border-blue-500 peer-checked:bg-blue-900/20 peer-checked:text-blue-400' 
+                                : 'border-slate-100 bg-slate-50 text-slate-500 peer-checked:border-[#0C0C84] peer-checked:bg-blue-50/50 peer-checked:text-[#0C0C84]'">
+                            <svg class="w-6 h-6 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <span class="font-bold">Social Group</span>
+                        </div>
+                    </label>
+
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="groupType" value="class" class="peer hidden">
+                        <div class="flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all"
+                             [class]="(theme.isDarkMode$ | async) === '1' 
+                                ? 'border-slate-700 bg-slate-800 text-slate-400 peer-checked:border-emerald-500 peer-checked:bg-emerald-900/20 peer-checked:text-emerald-400' 
+                                : 'border-slate-100 bg-slate-50 text-slate-500 peer-checked:border-emerald-600 peer-checked:bg-emerald-50/50 peer-checked:text-emerald-700'">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 mb-2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25" />
+                            </svg>                            
+                            <span class="font-bold">Academic Class</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mt-auto"></div>
+
+            <div class="flex flex-col gap-2 mb-5 shrink-0">
+                <label class="text-sm font-bold uppercase tracking-wider" 
+                       [class]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400' : 'text-slate-500'">
+                    Terms & Permissions
+                </label>
+                
+                <div class="p-3 h-20 rounded-xl border overflow-y-auto custom-scroll text-[14px] leading-relaxed"
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900/40 border-slate-700 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500'">
+                    By creating this group or class, you agree to our community guidelines. <strong>1. Member Consent:</strong> Users must explicitly accept an invite before being added to this space. <strong>2. Post Moderation:</strong> As an admin, you are responsible for moderating content; all member posts require your approval to become visible. <strong>3. Notifications:</strong> Members consent to receive activity alerts. Please ensure a respectful environment.
+                </div>
+
+                <label class="flex items-center gap-3 mt-1 cursor-pointer group w-fit">
+                    <div class="relative flex items-center shrink-0">
+                        <input #termsCheck type="checkbox" class="peer h-5 w-5 cursor-pointer appearance-none rounded border-2 transition-all"
+                               [class]="(theme.isDarkMode$ | async) === '1' ? 'border-slate-500 bg-slate-900 checked:border-blue-500 checked:bg-blue-500' : 'border-slate-300 bg-white checked:border-[#0C0C84] checked:bg-[#0C0C84]'">
+                        <svg class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none opacity-0 peer-checked:opacity-100 text-white transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <span class="text-md font-bold transition-colors" 
+                          [class]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-300 hover:text-white' : 'text-slate-700 hover:text-slate-900'">
+                        I agree to the terms and permissions.
+                    </span>
+                </label>
+            </div>
+
+            <button [disabled]="!groupName.value.trim() || !termsCheck.checked" 
+                    class="w-full shrink-0 cursor-pointer text-white px-8 py-3 rounded-xl font-bold shadow-md transition-all text-base disabled:opacity-50 disabled:cursor-not-allowed tracking-wider" 
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-blue-600 hover:bg-blue-500 disabled:hover:bg-blue-600' : 'background-cec-blue hover:opacity-90 disabled:hover:opacity-100'">
+                Create
+            </button>
+            
+        </div>
+
+        <div class="border-t px-8 py-3 shrink-0 transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700' : 'bg-slate-50 border-slate-100'">
+            <p class="text-xs text-center transition-colors" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-slate-400' : 'text-slate-500'">
+                Need technical help? <a href="https://www.facebook.com/mills.belamide.2024/" class="font-bold hover:underline" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-[#0C0C84]'">Reach developer</a>
+            </p>
+        </div>
+
+    </div>
+</div>

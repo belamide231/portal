@@ -1,0 +1,72 @@
+<div class="transition-all absolute h-dvh w-dvw top-0 left-0 flex items-center justify-center p-4 z-250 backdrop-blur-sm" 
+     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-black/70' : 'bg-black/50'">
+    
+    <div class="rounded-lg shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up flex flex-col transition-colors duration-300" 
+         [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800 border border-slate-700' : 'bg-white'">
+        
+        <div class="px-8 py-5 flex justify-between items-center shrink-0 transition-colors" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-b border-slate-700' : 'background-cec-blue'">
+            <div class="flex items-center gap-4">
+                <img [src]="image.cecLogoPath" alt="CEC Logo" class="h-10 w-10 object-contain rounded-full p-1 shadow-sm transition-colors" 
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-800' : 'bg-white'">
+                <h2 class="text-white text-xl font-bold tracking-wide">Leave Group</h2>
+            </div>
+            
+            <button (click)="navigator.descend(route)" class="cursor-pointer transition-colors" 
+                    [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 hover:text-white' : 'text-white/80 hover:text-white'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-8 pb-6 flex-grow">
+            
+            <div class="mb-8 flex items-start gap-5">
+                
+                <div class="shrink-0 rounded-full p-3 transition-colors" 
+                     [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-red-500/10 text-red-400' : 'bg-red-50 text-red-500'">
+                    <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-2 transition-colors" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : 'text-gray-900'">
+                        Are you absolutely sure?
+                    </h3>
+                    <p class="text-base leading-relaxed mb-3 transition-colors" 
+                       [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300' : 'text-gray-600'">
+                        You are about to leave <strong [class]="(theme.isDarkMode$ | async) === '1' ? 'text-white' : ''">BSIT Batch 2026</strong>.
+                    </p>
+                    
+                    <p class="text-sm leading-relaxed border-l-4 pl-3 transition-colors" 
+                       [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400 border-red-500/50' : 'text-gray-500 border-red-200'">
+                        You will immediately lose access to all discussions, grades, members, and shared files inside this group.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-4 mt-6">
+                <button (click)="navigator.descend(route)" class="px-6 py-2.5 font-medium rounded-md transition-colors cursor-pointer text-base flex items-center" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'">
+                    No, Cancel
+                </button>
+                <button class="cursor-pointer px-8 py-2.5 rounded-md font-medium shadow-md transition-opacity text-base flex items-center gap-2" 
+                        [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-red-300 hover:opacity-90 text-white'">
+                    Yes, Leave Group
+                </button>
+            </div>
+        </div>
+        
+        <div class="border-t px-8 py-4 shrink-0 transition-colors" 
+             [class]="(theme.isDarkMode$ | async) === '1' ? 'bg-slate-900 border-slate-700' : 'bg-gray-50 border-gray-100'">
+            <p class="text-sm text-center transition-colors" 
+               [class]="(theme.isDarkMode$ | async) === '1' ? 'text-gray-400' : 'text-gray-500'">
+                Having trouble? <a href="https://www.facebook.com/mills.belamide.2024/" class="font-medium hover:underline" [class]="(theme.isDarkMode$ | async) === '1' ? 'text-blue-400' : 'text-blue-600'">Reach developer</a>
+            </p>
+        </div>
+
+    </div>
+</div>
