@@ -904,7 +904,7 @@ START TRANSACTION;
 -- PARAMETERS [14]
 SET @group_id = NULL;
 SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6');
-SET @post_text = '';
+SET @post_text = 'More practice problems for the midterm exam, please!';
 SET @is_important = TRUE;
 
 -- SQL [14]
@@ -995,7 +995,7 @@ LEFT JOIN tbl_groups t2
 JOIN tbl_posts t3
     ON t3.post_id = @post_id;
 
-SET @starting_notification_id = LAST_INSERT_ID() - ROW_COUNT();
+SET @starting_notification_id = (LAST_INSERT_ID() - ROW_COUNT());
 
 SELECT 
     t1.notification_id, 
@@ -1004,3 +1004,54 @@ FROM tbl_users_notification t1
 JOIN tbl_users_connection t2
     ON t1.recipient_id = t2.user_id
 WHERE t1.notification_id > @starting_notification_id;
+
+/******************************************************************************************/
+/******************************************************************************************/
+/******************************************************************************************/
+/******************************************************************************************/
+/******************************************************************************************/
+/******************************************************************************************/
+/******************************************************************************************/
+/* NO: [15]
+ * CREATING_POST
+ * When an admin/instructor/author/student/member comments a post/replies a comment.
+ * moderator/author/admin's perspective. *clicks notification* navigates: 'group/:groupId'
+ * */
+
+DESCRIBE tbl_posts;
+DESCRIBE tbl_users_account;
+DESCRIBE tbl_users_notification;
+DESCRIBE tbl_groups;
+DESCRIBE tbl_users_connection;
+DESCRIBE tbl_comments;
+
+SELECT * FROM tbl_posts;
+SELECT * FROM tbl_users_account;
+SELECT * FROM tbl_users_notification t1 JOIN tbl_users_account t2 ON t1.recipient_id = t2.user_id;
+SELECT * FROM tbl_groups;
+SELECT * FROM tbl_users_connection;
+SELECT * FROM tbl_comments;
+
+ROLLBACK;
+COMMIT;
+START TRANSACTION;
+
+-- PARAMETERS [15]
+SET @group_id = NULL;
+SET @post_id = 2;
+SET @parent_comment_id = NULL;
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student1');
+SET @comment_text = 'cool!';
+-- SQL [15]
+
+DESCRIBE tbl_post_comments;
+INSERT INTO tbl_post_comments(parent_comment_id, post_id, author_id, comment_text, comment_status);
+SELECT
+	@parent_comment_id parent_comment_id,
+	@post_id post_id,
+	@user_id author_id,
+	@comment_text comment_text
+	CASE 
+		WHEN  THEN  
+		ELSE  
+	END;
