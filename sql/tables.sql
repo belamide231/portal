@@ -201,6 +201,19 @@ CREATE TABLE IF NOT EXISTS tbl_post_interactions (
 	interaction_type ENUM('liked', 'commented') NOT NULL
 ) ENGINE = Innodb;
 
+CREATE TABLE IF NOT EXISTS tbl_post_tags (
+	post_id INT NOT NULL,
+		INDEX index_post_id (post_id),
+		FOREIGN KEY (post_id) REFERENCES tbl_posts(post_id)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE,
+	user_id VARCHAR(99) NOT NULL,
+		INDEX index_user_id (user_id),
+		FOREIGN KEY (user_id) REFERENCES tbl_users_account(user_id)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE
+) ENGINE = Innodb;
+
 DROP TABLE IF EXISTS tbl_post_comments;
 CREATE TABLE IF NOT EXISTS tbl_post_comments (
 	comment_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -213,6 +226,11 @@ CREATE TABLE IF NOT EXISTS tbl_post_comments (
 	post_id INT NOT NULL,
 		INDEX index_post_id (post_id),
 		FOREIGN KEY (post_id) REFERENCES tbl_posts(post_id)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE,
+	group_id INT NULL DEFAULT NULL,
+		INDEX index_group_id (group_id),
+		FOREIGN KEY (group_id) REFERENCES tbl_groups(group_id)
 			ON DELETE CASCADE
 			ON UPDATE CASCADE,
 	comment_stamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),

@@ -159,7 +159,7 @@ WHERE t1.membership_id > @starting_membership_id
 AND t1.referrer_id = @user_id
 AND t1.group_id = @group_id;
 
-SET @starting_notification_id = LAST_INSERT_ID() - ROW_COUNT();
+SET @starting_notification_id = (LAST_INSERT_ID() - ROW_COUNT());
 
 SELECT 
 	t1.notification_id,
@@ -259,7 +259,7 @@ AND EXISTS (
 	SELECT TRUE FROM tbl_groups WHERE group_id = @group_id AND join_policy = 'request_join'
 );
 
-SET @starting_notification_id = LAST_INSERT_ID() - ROW_COUNT();
+SET @starting_notification_id = (LAST_INSERT_ID() - ROW_COUNT());
 
 SELECT 
 	t1.notification_id,
@@ -1030,28 +1030,58 @@ SELECT * FROM tbl_users_account;
 SELECT * FROM tbl_users_notification t1 JOIN tbl_users_account t2 ON t1.recipient_id = t2.user_id;
 SELECT * FROM tbl_groups;
 SELECT * FROM tbl_users_connection;
-SELECT * FROM tbl_comments;
+SELECT * FROM tbl_post_comments;
 
 ROLLBACK;
 COMMIT;
 START TRANSACTION;
 
 -- PARAMETERS [15]
+SELECT t1.group_id, t2.username, t1.is_group_moderator, t1.group_role FROM tbl_group_members t1 JOIN tbl_users_account t2 ON t1.member_id = t2.user_id;
 SET @group_id = NULL;
 SET @post_id = 2;
 SET @parent_comment_id = NULL;
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student1');
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student10');
 SET @comment_text = 'cool!';
 -- SQL [15]
 
 DESCRIBE tbl_post_comments;
-INSERT INTO tbl_post_comments(parent_comment_id, post_id, author_id, comment_text, comment_status);
+INSERT INTO tbl_post_comments(parent_comment_id, post_id, group_id, author_id, comment_text, comment_status)
 SELECT
 	@parent_comment_id parent_comment_id,
 	@post_id post_id,
+	@group_id group_id,
 	@user_id author_id,
-	@comment_text comment_text
-	CASE 
-		WHEN  THEN  
-		ELSE  
-	END;
+	@comment_text comment_text,
+	CASE
+		WHEN @group_id IS NULL AND t3.post_policy = 'public' THEN 'posted'
+		WHEN @group_id IS NULL AND t3.post_policy = 'moderated' AND t1.ROLE = 'student' AND t1.is_moderator = FALSE THEN 'pending'
+		WHEN @group_id IS NULL AND t3.post_policy = 'moderated' AND (t1.ROLE IN ('instructor', 'admin') OR t1.is_moderator = TRUE) THEN 'posted'
+		WHEN @group_id IS NULL AND t3.post_policy = 'restricted' AND t1.ROLE = 'admin' THEN 'posted'
+		WHEN @group_id IS NOT NULL AND t3.post_policy = 'public' THEN 'posted'
+		WHEN @group_id IS NOT NULL AND t3.post_policy = 'moderated' AND (t2.group_role != 'group_author' AND t2.is_group_moderator = FALSE) THEN 'pending'
+		WHEN @group_id IS NOT NULL AND t3.post_policy = 'moderated' AND (t2.group_role = 'group_author' OR t2.is_group_moderator = TRUE) THEN 'posted'
+		WHEN @group_id IS NOT NULL AND t3.post_policy = 'restricted' AND t2.group_role = 'group_author' THEN 'posted'
+		ELSE 'pending'
+	END comment_status
+FROM tbl_users_account t1
+LEFT JOIN tbl_group_members t2
+	ON @group_id IS NOT NULL
+	AND t2.group_id = @group_id
+	AND t2.member_id = @user_id
+JOIN tbl_portal_policy t3
+	ON t3.policy_id = 1
+WHERE t1.user_id = @user_id;
+
+SET @comment_id = LAST_INSERT_ID();
+SELECT @comment_id comment_id;
+
+DESCRIBE tbl_users_notification;
+INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, group_id, post_id);
+SELECT
+	@user_id sender_id
+FROM tbl_posts t1
+LEFT JOIN tbl_post_comments t2
+	ON @parent_comment_id IS NOT NULL
+	AND t2.comment_id = @parent_comment_id 
+WHERE t1.post_id = @post_id;
