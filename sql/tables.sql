@@ -281,6 +281,8 @@ CREATE TABLE IF NOT EXISTS tbl_comment_interactions (
 
 DROP TABLE IF EXISTS tbl_post_comment_mentions;
 CREATE TABLE IF NOT EXISTS tbl_post_comment_mentions (
+	mention_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+		INDEX index_mention_id (mention_id),
 	comment_id INT NOT NULL,
 		INDEX index_comment_id (comment_id),
 		FOREIGN KEY (comment_id) REFERENCES tbl_post_comments(comment_id)
@@ -589,7 +591,7 @@ CREATE TABLE IF NOT EXISTS tbl_users_notification (
 		'REQUESTING_GROUP_JOIN',
 		'ACCEPTED_GROUP_JOIN',
 		'KICKED_YOU',
-		'COMMENTED_POST',
+		'COMMENTED_YOUR_POST',
 		'REPLIED_POST',
 		'LIKED_POST',
 		'LIKED_COMMENT', 
@@ -602,7 +604,8 @@ CREATE TABLE IF NOT EXISTS tbl_users_notification (
 		'POSTED_A_POST',
 		'POSTED_IN_GROUP',
 		'TAGGED_YOU_IN_POST',
-		'MENTIONED_YOU_IN_COMMENT'
+		'MENTIONED_YOU_IN_COMMENT',
+		'COMMENTED_ON_A_POST_THAT_YOU_ARE_TAGGED'
 	) NOT NULL,
 	target_url VARCHAR(7999) NOT NULL,
 	is_viewed BOOLEAN NOT NULL DEFAULT FALSE,
@@ -651,10 +654,11 @@ ALTER TABLE tbl_users_notification MODIFY COLUMN notification_type ENUM(
 		'REQUESTING_GROUP_JOIN',
 		'ACCEPTED_GROUP_JOIN',
 		'KICKED_YOU',
-		'COMMENTED_POST',
+		'COMMENTED_YOUR_POST',
 		'REPLIED_POST',
 		'LIKED_POST',
-		'LIKED_COMMENT',
+		'LIKED_COMMENT', 
+		'REPLIED_YOUR_COMMENT',
 		'POST_APPROVE',
 		'POSTED_TASK', 
 		'TURNED_GROUP_MODERATOR',
@@ -663,11 +667,12 @@ ALTER TABLE tbl_users_notification MODIFY COLUMN notification_type ENUM(
 		'POSTED_A_POST',
 		'POSTED_IN_GROUP',
 		'TAGGED_YOU_IN_POST',
-		'MENTIONED_YOU_IN_COMMENT'
+		'MENTIONED_YOU_IN_COMMENT',
+		'COMMENTED_ON_A_POST_THAT_YOU_ARE_TAGGED'
 ) NOT NULL;
 
-DROP TABLE IF EXISTS tbl_users_notification_muted;
-CREATE TABLE IF NOT EXISTS tbl_users_notification_muted (
+DROP TABLE IF EXISTS tbl_users_notification_mutes;
+CREATE TABLE IF NOT EXISTS tbl_users_notification_mutes (
 	user_id VARCHAR(99) NOT NULL,
 		INDEX index_user_id (user_id),
 		FOREIGN KEY (user_id) REFERENCES tbl_users_account(user_id)

@@ -1055,12 +1055,7 @@ SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6
 SET @comment_text = 'child-comment!';
 SET @mentioned_users_id = 'cf1099b6-471d-11f1-9a32-37b9fcc3dc05 cf109f4c-471d-11f1-9a32-37b9fcc3dc05 cf10a0d2-471d-11f1-9a32-37b9fcc3dc05';
 
-SELECT * FROM tbl_users_account
-
 -- SQL [15]
-
-SELECT * FROM tbl_post_comments;
-DESCRIBE tbl_post_comments;
 INSERT INTO tbl_post_comments(parent_comment_id, post_id, group_id, author_id, comment_text, comment_status)
 SELECT
 	@parent_comment_id parent_comment_id,
@@ -1090,8 +1085,11 @@ WHERE t1.user_id = @user_id;
 
 SET @comment_id = LAST_INSERT_ID();
 
-DROP TEMPORARY TABLE IF EXISTS mentioned_users;
-CREATE TEMPORARY TABLE mentioned_users AS (
+INSERT INTO tbl_post_comment_mentions(comment_id, user_id)
+SELECT
+	@comment_id comment_id,
+	t1.user_id user_id
+FROM (
 	WITH RECURSIVE recursion AS (
 		SELECT 
 			TRIM(REGEXP_REPLACE(CONVERT(@mentioned_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')) AS remaining, 
@@ -1106,97 +1104,104 @@ CREATE TEMPORARY TABLE mentioned_users AS (
 	SELECT
 		element AS user_id
 	FROM recursion t1
-	LEFT JOIN tbl_users_notification_muted t2
+	LEFT JOIN tbl_users_notification_mutes t2
 		ON t1.element = t2.user_id
 		AND t2.post_id = @post_id
 		AND t2.comment_id = @comment_id
 	WHERE t2.post_id IS NULL
 	AND t2.comment_id IS NULL
-);
-
-INSERT INTO tbl_post_comment_mentions(comment_id, user_id);
-SELECT
-	@comment_id comment_id,
-	t1.user_id user_id
-FROM mentioned_users t1
-LEFT JOIN tbl_users_notification_muted t2
+) t1
+LEFT JOIN tbl_users_notification_mutes t2
 	ON t1.user_id = t2.user_id
 	AND t2.post_id = @post_id
 	AND t2.comment_id = @comment_id
 WHERE t2.post_id IS NULL
 AND t2.comment_id IS NULL;
 
-INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_type, notification_text, target_url, group_id, post_id);
+SET @first_mention_id = (LAST_INSERT_ID() - ROW_COUNT());
 
+INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_type, notification_text, target_url, group_id, post_id, comment_id)
 SELECT
 	@user_id sender_id,
 	tu.recipient_id recipient_id,
 	tu.notification_type notification_type,
 	CASE 
 		WHEN tu.notification_type = 'MENTIONED_YOU_IN_COMMENT' THEN CONCAT(t1.full_name, ' mentioned you in a comment')
-		WHEN tu.notification_type = 'COMMENTED_POST' THEN CONCAT(t1.full_name, ' commented on your post')
-		WHEN tu.notification_type = 'TAGGED_POST_COMMENT' THEN CONCAT(t1.full_name, ' tagged you in a post comment')
+		WHEN tu.notification_type = 'COMMENTED_YOUR_POST' THEN CONCAT(t1.full_name, ' commented on your post')
+		WHEN tu.notification_type = 'COMMENTED_ON_A_POST_THAT_YOU_ARE_TAGGED' THEN CONCAT(t1.full_name, ' commented on a post that you are tagged')
 		WHEN tu.notification_type = 'REPLIED_YOUR_COMMENT' THEN CONCAT(t1.full_name, ' replied to your comment')
-	END notification_text
+	END notification_text,
+	CASE 
+		WHEN @group_id IS NOT NULL THEN CONCAT('group/', @group_id , '/post/', @post_id, '/comment/', @comment_id)
+		ELSE CONCAT('post/', @post_id, '/comment/', @comment_id)
+	END target_url,
+	@group_id group_id,
+	@post_id post_id,
+	@comment_id comment_id
 FROM (
 	SELECT
 		'MENTIONED_YOU_IN_COMMENT' notification_type,
 		t1.user_id recipient_id
-	FROM mentioned_users t1
-	LEFT JOIN tbl_users_notification_muted t2
+	FROM tbl_post_comment_mentions t1
+	LEFT JOIN tbl_users_notification_mutes t2
 		ON t1.user_id = t2.user_id
 		AND t2.post_id = @post_id
 		AND t2.comment_id = @comment_id
 	WHERE t2.post_id IS NULL
 	AND t2.comment_id IS NULL
-
+	AND t1.mention_id > @first_mention_id
 	UNION ALL
-
 	SELECT 
-		'COMMENTED_POST' notification_type,
+		'COMMENTED_YOUR_POST' notification_type,
 		t1.author_id recipient_id
 	FROM tbl_posts t1
-	LEFT JOIN tbl_users_notification_muted t2
+	LEFT JOIN tbl_users_notification_mutes t2
 		ON t1.author_id = t2.user_id
+	LEFT JOIN tbl_post_comment_mentions t3
+		ON t3.mention_id > @first_mention_id
+		AND t1.author_id = t3.user_id
 	WHERE @parent_comment_id IS NULL 
 	AND t1.post_id = @post_id
 	AND t2.post_id IS NULL
-
+	AND t3.user_id IS NULL
 	UNION ALL
-
 	SELECT
-		'TAGGED_POST_COMMENT' notification_type,
+		'COMMENTED_ON_A_POST_THAT_YOU_ARE_TAGGED' notification_type,
 		t1.user_id recipient_id
 	FROM tbl_post_tags t1
-	LEFT JOIN tbl_users_notification_muted t2
+	LEFT JOIN tbl_users_notification_mutes t2
 		ON t1.user_id = t2.user_id
+	LEFT JOIN tbl_post_comment_mentions t3
+		ON t3.mention_id > @first_mention_id
+		AND t1.user_id = t3.user_id
 	WHERE @parent_comment_id IS NULL
 	AND t1.post_id = @post_id
 	AND t2.post_id IS NULL
-
+	AND t3.user_id IS NULL
 	UNION ALL
-
 	SELECT 
 		'REPLIED_YOUR_COMMENT' notification_type,
 		t1.author_id recipient_id
 	FROM tbl_post_comments t1
-	LEFT JOIN tbl_users_notification_muted t2
+	LEFT JOIN tbl_users_notification_mutes t2
 		ON t1.author_id = t2.user_id
+	LEFT JOIN tbl_post_comment_mentions t3
+		ON t3.mention_id > @first_mention_id
+		AND t3.user_id = t1.author_id
 	WHERE @parent_comment_id IS NOT NULL
 	AND t1.comment_id = @parent_comment_id
 	AND t2.comment_id IS NULL
-
-	UNION ALL
-
-	SELECT
-		'MENTIONED_YOU_IN_COMMENT' notification_type,
-		t1.user_id recipient_id
-	FROM tbl_post_comment_mentions t1
-	LEFT JOIN tbl_users_notification_muted t2
-		ON t1.user_id = t2.user_id
-	WHERE @parent_comment_id IS NOT NULL 
-	AND t1.comment_id = @parent_comment_id
-	AND t2.comment_id IS NULL
+	AND t3.user_id IS NULL
 ) tu
 JOIN tbl_users_profile t1
 	ON t1.user_id = @user_id;
+
+SET @starting_notification_id = (LAST_INSERT_ID() - ROW_COUNT());
+
+SELECT 
+	t1.notification_id, 
+	t2.connection_id
+FROM tbl_users_notification t1
+JOIN tbl_users_connection t2
+	ON t1.recipient_id = t2.user_id
+WHERE t1.notification_id >= @starting_notification_id;
