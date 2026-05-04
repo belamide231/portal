@@ -1032,19 +1032,34 @@ SELECT * FROM tbl_groups;
 SELECT * FROM tbl_users_connection;
 SELECT * FROM tbl_post_comments;
 
+SELECT * FROM tbl_posts;
+SET @post_id = 2;
+INSERT INTO tbl_post_tags(post_id, user_id) 
+SELECT 
+	@post_id post_id,
+	user_id user_id
+FROM tbl_users_account 
+WHERE username IN ('student1', 'student2');
+SELECT * FROM tbl_post_tags; 
+
 ROLLBACK;
 COMMIT;
 START TRANSACTION;
 
--- PARAMETERS [15]
 SELECT t1.group_id, t2.username, t1.is_group_moderator, t1.group_role FROM tbl_group_members t1 JOIN tbl_users_account t2 ON t1.member_id = t2.user_id;
+-- PARAMETERS [15]
 SET @group_id = NULL;
 SET @post_id = 2;
-SET @parent_comment_id = NULL;
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student10');
-SET @comment_text = 'cool!';
+SET @parent_comment_id = 3;
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6');
+SET @comment_text = 'child-comment!';
+SET @mentioned_users_id = 'cf1099b6-471d-11f1-9a32-37b9fcc3dc05 cf109f4c-471d-11f1-9a32-37b9fcc3dc05 cf10a0d2-471d-11f1-9a32-37b9fcc3dc05';
+
+SELECT * FROM tbl_users_account
+
 -- SQL [15]
 
+SELECT * FROM tbl_post_comments;
 DESCRIBE tbl_post_comments;
 INSERT INTO tbl_post_comments(parent_comment_id, post_id, group_id, author_id, comment_text, comment_status)
 SELECT
@@ -1074,14 +1089,112 @@ JOIN tbl_portal_policy t3
 WHERE t1.user_id = @user_id;
 
 SET @comment_id = LAST_INSERT_ID();
-SELECT @comment_id comment_id;
 
-DESCRIBE tbl_users_notification;
-INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, group_id, post_id);
+INSERT INTO tbl_post_comment_mentions(comment_id, user_id)
+WITH RECURSIVE recursion AS (
+    SELECT 
+        TRIM(REGEXP_REPLACE(CONVERT(@mentioned_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')) AS remaining, 
+        SUBSTRING_INDEX(TRIM(REGEXP_REPLACE(CONVERT(@mentioned_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')), ' ', 1) AS element
+    UNION ALL
+    SELECT
+        TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), 
+        SUBSTRING_INDEX(TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), ' ', 1)
+    FROM recursion
+    WHERE remaining != element AND remaining != ''
+)
 SELECT
-	@user_id sender_id
-FROM tbl_posts t1
-LEFT JOIN tbl_post_comments t2
-	ON @parent_comment_id IS NOT NULL
-	AND t2.comment_id = @parent_comment_id 
-WHERE t1.post_id = @post_id;
+	@comment_id comment_id,
+	t1.element mentioned_user_id
+FROM recursion t1
+LEFT JOIN tbl_users_notification_muted t2
+	ON t1.element = t2.user_id
+	AND t2.post_id = @post_id
+	AND t2.comment_id = @comment_id
+WHERE t2.post_id IS NULL
+AND t2.comment_id IS NULL;
+
+INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_type, notification_text, target_url, group_id, post_id);
+
+SELECT
+	@user_id sender_id,
+	tu.recipient_id recipient_id,
+	tu.notification_type notification_type,
+	CASE 
+		WHEN tu.notification_type = 'MENTIONED_YOU_IN_COMMENT' THEN CONCAT(t1.full_name, ' mentioned you in a comment')
+		WHEN tu.notification_type = 'COMMENTED_POST' THEN CONCAT(t1.full_name, ' commented on your post')
+		WHEN tu.notification_type = 'TAGGED_POST_COMMENT' THEN CONCAT(t1.full_name, ' tagged you in a post comment')
+		WHEN tu.notification_type = 'REPLIED_COMMENT' THEN CONCAT(t1.full_name, ' replied to your comment')
+	END notification_text
+FROM (
+	WITH RECURSIVE recursion AS (
+		SELECT 
+			TRIM(REGEXP_REPLACE(CONVERT(@mentioned_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')) AS remaining, 
+			SUBSTRING_INDEX(TRIM(REGEXP_REPLACE(CONVERT(@mentioned_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')), ' ', 1) AS element
+		UNION ALL
+		SELECT 
+			TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), 
+			SUBSTRING_INDEX(TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), ' ', 1)
+		FROM recursion
+		WHERE remaining != element AND remaining != ''
+	)
+	SELECT
+		'MENTIONED_YOU_IN_COMMENT' notification_type,
+		t1.element recipient_id
+	FROM recursion t1
+	LEFT JOIN tbl_users_notification_muted t2
+		ON t1.element = t2.user_id
+		AND t2.post_id = @post_id
+		AND t2.comment_id = @comment_id
+	WHERE t2.post_id IS NULL
+	AND t2.comment_id IS NULL
+
+	UNION ALL
+
+	SELECT 
+		'COMMENTED_POST' notification_type,
+		t1.author_id recipient_id
+	FROM tbl_posts t1
+	LEFT JOIN tbl_users_notification_muted t2
+		ON t1.author_id = t2.user_id
+	WHERE @parent_comment_id IS NULL 
+	AND t1.post_id = @post_id
+	AND t2.post_id IS NULL
+
+	UNION ALL
+
+	SELECT
+		'TAGGED_POST_COMMENT' notification_type,
+		t1.user_id recipient_id
+	FROM tbl_post_tags t1
+	LEFT JOIN tbl_users_notification_muted t2
+		ON t1.user_id = t2.user_id
+	WHERE @parent_comment_id IS NULL
+	AND t1.post_id = @post_id
+	AND t2.post_id IS NULL
+
+	UNION ALL
+
+	SELECT 
+		'REPLIED_COMMENT' notification_type,
+		t1.author_id recipient_id
+	FROM tbl_post_comments t1
+	LEFT JOIN tbl_users_notification_muted t2
+		ON t1.author_id = t2.user_id
+	WHERE @parent_comment_id IS NOT NULL
+	AND t1.comment_id = @parent_comment_id
+	AND t2.comment_id IS NULL
+
+	UNION ALL
+
+	SELECT
+		'MENTIONED_YOU_IN_COMMENT' notification_type,
+		t1.user_id recipient_id
+	FROM tbl_post_comment_mentions t1
+	LEFT JOIN tbl_users_notification_muted t2
+		ON t1.user_id = t2.user_id
+	WHERE @parent_comment_id IS NOT NULL 
+	AND t1.comment_id = @parent_comment_id
+	AND t2.comment_id IS NULL
+) tu
+JOIN tbl_users_profile t1
+	ON t1.user_id = @user_id;

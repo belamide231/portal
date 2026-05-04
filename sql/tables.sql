@@ -279,6 +279,20 @@ CREATE TABLE IF NOT EXISTS tbl_comment_interactions (
 	interaction_type ENUM('liked', 'commented') NOT NULL
 ) ENGINE = Innodb;
 
+DROP TABLE IF EXISTS tbl_post_comment_mentions;
+CREATE TABLE IF NOT EXISTS tbl_post_comment_mentions (
+	comment_id INT NOT NULL,
+		INDEX index_comment_id (comment_id),
+		FOREIGN KEY (comment_id) REFERENCES tbl_post_comments(comment_id)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE,
+	user_id VARCHAR(99) NOT NULL,
+		INDEX index_user_id (user_id),
+		FOREIGN KEY (user_id) REFERENCES tbl_users_account(user_id)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE
+) ENGINE = Innodb;
+
 -- POOL
 DROP TABLE IF EXISTS tbl_pool;
 CREATE TABLE IF NOT EXISTS tbl_pool (
@@ -585,7 +599,9 @@ CREATE TABLE IF NOT EXISTS tbl_users_notification (
 		'REQUESTED_POST_APPROVAL',
 		'REQUESTED_GROUP_POST_APPROVAL',
 		'POSTED_A_POST',
-		'POSTED_IN_GROUP'
+		'POSTED_IN_GROUP',
+		'TAGGED_YOU_IN_POST',
+		'MENTIONED_YOU_IN_COMMENT'
 	) NOT NULL,
 	target_url VARCHAR(7999) NOT NULL,
 	is_viewed BOOLEAN NOT NULL DEFAULT FALSE,
@@ -628,35 +644,37 @@ CREATE TABLE IF NOT EXISTS tbl_users_notification (
 ) ENGINE = Innodb;
 
 ALTER TABLE tbl_users_notification MODIFY COLUMN notification_type ENUM(
-	'CREATED_GROUP',
-	'PENDING_GROUP_INVITATION',
-	'ACCEPTED_GROUP_INVITATION',
-	'REQUESTING_GROUP_JOIN',
-	'ACCEPTED_GROUP_JOIN',
-	'KICKED_YOU',
-	'COMMENTED_POST',
-	'REPLIED_POST',
-	'LIKED_POST',
-	'LIKED_COMMENT',
-	'POST_APPROVE',
-	'POSTED_TASK',
-	'TURNED_GROUP_MODERATOR',
-	'REQUESTED_POST_APPROVAL',
-	'REQUESTED_GROUP_POST_APPROVAL',
-	'POSTED_A_POST',
-	'POSTED_IN_GROUP'
+		'CREATED_GROUP',
+		'PENDING_GROUP_INVITATION',
+		'ACCEPTED_GROUP_INVITATION',
+		'REQUESTING_GROUP_JOIN',
+		'ACCEPTED_GROUP_JOIN',
+		'KICKED_YOU',
+		'COMMENTED_POST',
+		'REPLIED_POST',
+		'LIKED_POST',
+		'LIKED_COMMENT',
+		'POST_APPROVE',
+		'POSTED_TASK', 
+		'TURNED_GROUP_MODERATOR',
+		'REQUESTED_POST_APPROVAL',
+		'REQUESTED_GROUP_POST_APPROVAL',
+		'POSTED_A_POST',
+		'POSTED_IN_GROUP',
+		'TAGGED_YOU_IN_POST',
+		'MENTIONED_YOU_IN_COMMENT'
 ) NOT NULL;
 
 DROP TABLE IF EXISTS tbl_users_notification_muted;
 CREATE TABLE IF NOT EXISTS tbl_users_notification_muted (
+	user_id VARCHAR(99) NOT NULL,
+		INDEX index_user_id (user_id),
+		FOREIGN KEY (user_id) REFERENCES tbl_users_account(user_id)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE,
 	group_id INT NULL DEFAULT NULL,
 		INDEX index_group_id (group_id),
 		FOREIGN KEY (group_id) REFERENCES tbl_groups(group_id)
-			ON DELETE CASCADE
-			ON UPDATE CASCADE,
-	membership_id INT NULL DEFAULT NULL,
-		INDEX index_membership_id (membership_id),
-		FOREIGN KEY (membership_id) REFERENCES tbl_group_membership_requests(membership_id)
 			ON DELETE CASCADE
 			ON UPDATE CASCADE,
 	post_id INT NULL DEFAULT NULL,
@@ -668,17 +686,7 @@ CREATE TABLE IF NOT EXISTS tbl_users_notification_muted (
 		INDEX index_comment_id (comment_id),
 		FOREIGN KEY (comment_id) REFERENCES tbl_post_comments(comment_id) 
 		ON DELETE CASCADE 
-		ON UPDATE CASCADE,
-	post_interaction_id INT NULL DEFAULT NULL,
-		INDEX index_post_interaction_id (post_interaction_id),
-		FOREIGN KEY (post_interaction_id) REFERENCES tbl_post_interactions(post_interaction_id) 
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE,
-	comment_interaction_id INT NULL DEFAULT NULL,
-		INDEX index_comment_interaction_id (comment_interaction_id),
-		FOREIGN KEY (comment_interaction_id) REFERENCES tbl_comment_interactions(comment_interaction_id) 
-			ON DELETE CASCADE 
-			ON UPDATE CASCADE
+		ON UPDATE CASCADE
 ) ENGINE = Innodb;
 
 -- INITIAL
