@@ -1056,6 +1056,7 @@ SET @comment_text = 'child-comment!';
 SET @mentioned_users_id = 'cf1099b6-471d-11f1-9a32-37b9fcc3dc05 cf109f4c-471d-11f1-9a32-37b9fcc3dc05 cf10a0d2-471d-11f1-9a32-37b9fcc3dc05';
 
 -- SQL [15]
+-- wapa mahoman
 INSERT INTO tbl_post_comments(parent_comment_id, post_id, group_id, author_id, comment_text, comment_status)
 SELECT
 	@parent_comment_id parent_comment_id,
