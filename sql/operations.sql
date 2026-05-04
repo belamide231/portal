@@ -1090,24 +1090,37 @@ WHERE t1.user_id = @user_id;
 
 SET @comment_id = LAST_INSERT_ID();
 
-INSERT INTO tbl_post_comment_mentions(comment_id, user_id)
-WITH RECURSIVE recursion AS (
-    SELECT 
-        TRIM(REGEXP_REPLACE(CONVERT(@mentioned_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')) AS remaining, 
-        SUBSTRING_INDEX(TRIM(REGEXP_REPLACE(CONVERT(@mentioned_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')), ' ', 1) AS element
-    UNION ALL
-    SELECT
-        TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), 
-        SUBSTRING_INDEX(TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), ' ', 1)
-    FROM recursion
-    WHERE remaining != element AND remaining != ''
-)
+DROP TEMPORARY TABLE IF EXISTS mentioned_users;
+CREATE TEMPORARY TABLE mentioned_users AS (
+	WITH RECURSIVE recursion AS (
+		SELECT 
+			TRIM(REGEXP_REPLACE(CONVERT(@mentioned_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')) AS remaining, 
+			SUBSTRING_INDEX(TRIM(REGEXP_REPLACE(CONVERT(@mentioned_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')), ' ', 1) AS element
+		UNION ALL
+		SELECT
+			TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), 
+			SUBSTRING_INDEX(TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), ' ', 1)
+		FROM recursion
+		WHERE remaining != element AND remaining != ''
+	)
+	SELECT
+		element AS user_id
+	FROM recursion t1
+	LEFT JOIN tbl_users_notification_muted t2
+		ON t1.element = t2.user_id
+		AND t2.post_id = @post_id
+		AND t2.comment_id = @comment_id
+	WHERE t2.post_id IS NULL
+	AND t2.comment_id IS NULL
+);
+
+INSERT INTO tbl_post_comment_mentions(comment_id, user_id);
 SELECT
 	@comment_id comment_id,
-	t1.element mentioned_user_id
-FROM recursion t1
+	t1.user_id user_id
+FROM mentioned_users t1
 LEFT JOIN tbl_users_notification_muted t2
-	ON t1.element = t2.user_id
+	ON t1.user_id = t2.user_id
 	AND t2.post_id = @post_id
 	AND t2.comment_id = @comment_id
 WHERE t2.post_id IS NULL
@@ -1123,26 +1136,15 @@ SELECT
 		WHEN tu.notification_type = 'MENTIONED_YOU_IN_COMMENT' THEN CONCAT(t1.full_name, ' mentioned you in a comment')
 		WHEN tu.notification_type = 'COMMENTED_POST' THEN CONCAT(t1.full_name, ' commented on your post')
 		WHEN tu.notification_type = 'TAGGED_POST_COMMENT' THEN CONCAT(t1.full_name, ' tagged you in a post comment')
-		WHEN tu.notification_type = 'REPLIED_COMMENT' THEN CONCAT(t1.full_name, ' replied to your comment')
+		WHEN tu.notification_type = 'REPLIED_YOUR_COMMENT' THEN CONCAT(t1.full_name, ' replied to your comment')
 	END notification_text
 FROM (
-	WITH RECURSIVE recursion AS (
-		SELECT 
-			TRIM(REGEXP_REPLACE(CONVERT(@mentioned_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')) AS remaining, 
-			SUBSTRING_INDEX(TRIM(REGEXP_REPLACE(CONVERT(@mentioned_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')), ' ', 1) AS element
-		UNION ALL
-		SELECT 
-			TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), 
-			SUBSTRING_INDEX(TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), ' ', 1)
-		FROM recursion
-		WHERE remaining != element AND remaining != ''
-	)
 	SELECT
 		'MENTIONED_YOU_IN_COMMENT' notification_type,
-		t1.element recipient_id
-	FROM recursion t1
+		t1.user_id recipient_id
+	FROM mentioned_users t1
 	LEFT JOIN tbl_users_notification_muted t2
-		ON t1.element = t2.user_id
+		ON t1.user_id = t2.user_id
 		AND t2.post_id = @post_id
 		AND t2.comment_id = @comment_id
 	WHERE t2.post_id IS NULL
@@ -1175,7 +1177,7 @@ FROM (
 	UNION ALL
 
 	SELECT 
-		'REPLIED_COMMENT' notification_type,
+		'REPLIED_YOUR_COMMENT' notification_type,
 		t1.author_id recipient_id
 	FROM tbl_post_comments t1
 	LEFT JOIN tbl_users_notification_muted t2
