@@ -1131,6 +1131,7 @@ SELECT
 		WHEN tu.notification_type = 'COMMENTED_YOUR_POST' THEN CONCAT(t1.full_name, ' commented on your post')
 		WHEN tu.notification_type = 'COMMENTED_ON_A_POST_THAT_YOU_ARE_TAGGED' THEN CONCAT(t1.full_name, ' commented on a post that you are tagged')
 		WHEN tu.notification_type = 'REPLIED_YOUR_COMMENT' THEN CONCAT(t1.full_name, ' replied to your comment')
+		WHEN tu.notification_type = 'REQUESTED_COMMENT_APPROVAL' THEN CONCAT(t1.full_name, ' requested comment approval')
 	END notification_text,
 	CASE 
 		WHEN @group_id IS NOT NULL THEN CONCAT('group/', @group_id , '/post/', @post_id, '/comment/', @comment_id)
