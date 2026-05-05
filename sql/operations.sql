@@ -1131,6 +1131,7 @@ SELECT
 		WHEN tu.notification_type = 'COMMENTED_YOUR_POST' THEN CONCAT(t1.full_name, ' commented on your post')
 		WHEN tu.notification_type = 'COMMENTED_ON_A_POST_THAT_YOU_ARE_TAGGED' THEN CONCAT(t1.full_name, ' commented on a post that you are tagged')
 		WHEN tu.notification_type = 'REPLIED_YOUR_COMMENT' THEN CONCAT(t1.full_name, ' replied to your comment')
+		WHEN tu.notification_type = 'REQUESTED_COMMENT_APPROVAL_IN_GROUP' THEN CONCAT(t1.full_name, ' requested comment approval in ', t2.group_type, ' ', t2.group_name)
 		WHEN tu.notification_type = 'REQUESTED_COMMENT_APPROVAL' THEN CONCAT(t1.full_name, ' requested comment approval')
 	END notification_text,
 	CASE 
@@ -1215,26 +1216,31 @@ FROM (
 	AND t4.post_status = 'posted'
 
 	SELECT
-		'REQUESTED_COMMENT_APPROVAL' notification_type,
+		'REQUESTED_COMMENT_APPROVAL_IN_GROUP' notification_type,
 		t1.member_id recipient_id
 	FROM tbl_group_members t1
-	LEFT JOIN tbl_users_notification_mutes t2
-		ON t1.member_id = t2.user_id
-		AND (
-			OR t2.group_id = @group_id
-			OR t2.post_id = @post_id
-			OR t2.comment_id = @comment_id
-		)
-	JOIN tbl_post t3
-		t3.post_id = @post_id
+	JOIN tbl_post t2
+		t2.post_id = @post_id
 	WHERE @group_id IS NOT NULL
 	AND t1.group_id = @group_id
-	AND t2.user_id IS NULL
-	AND t3.post_status = 'pending'
+	AND t2.is_group_moderator IS TRUE
+	AND t2.post_status = 'pending'
+
+	SELECT
+		'REQUEST_COMMENT_APPROVAL' notification_type,
+		t1.user_id recipient_id
+	FROM tbl_users_account t1 
+	JOIN tbl_post t2
+		t2.post_id = @post_id
+	WHERE @group_id IS NULL
+	AND t1.is_moderator IS TRUE
+	AND t2.post_status = 'pending'
 	
 ) tu
 JOIN tbl_users_profile t1
-	ON t1.user_id = @user_id;
+	ON t1.user_id = @user_id
+LEFT JOIN tbl_groups t2
+	ON t2.group_id = @group_id;
 
 SET @starting_notification_id = (LAST_INSERT_ID() - ROW_COUNT());
 
