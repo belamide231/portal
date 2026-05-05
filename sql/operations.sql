@@ -1215,6 +1215,8 @@ FROM (
 	AND t3.user_id IS NULL
 	AND t4.post_status = 'posted'
 
+	UNION ALL
+
 	SELECT
 		'REQUESTED_COMMENT_APPROVAL_IN_GROUP' notification_type,
 		t1.member_id recipient_id
@@ -1225,6 +1227,8 @@ FROM (
 	AND t1.group_id = @group_id
 	AND t2.is_group_moderator IS TRUE
 	AND t2.post_status = 'pending'
+
+	UNION ALL
 
 	SELECT
 		'REQUEST_COMMENT_APPROVAL' notification_type,
