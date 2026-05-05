@@ -1,4 +1,4 @@
--- CONNECTION: jdbc:mysql://127.0.0.1:3306/cec_portal?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Manila
+((-- CONNECTION: jdbc:mysql://127.0.0.1:3306/cec_portal?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Manila
 
 USE cec_portal;
 
@@ -1140,6 +1140,7 @@ SELECT
 	@post_id post_id,
 	@comment_id comment_id
 FROM (
+
 	SELECT
 		'MENTIONED_YOU_IN_COMMENT' notification_type,
 		t1.user_id recipient_id
@@ -1148,10 +1149,15 @@ FROM (
 		ON t1.user_id = t2.user_id
 		AND t2.post_id = @post_id
 		AND t2.comment_id = @comment_id
+  JOIN tbl_post t3
+    ON t3.post_id = @post_id
 	WHERE t2.post_id IS NULL
 	AND t2.comment_id IS NULL
 	AND t1.mention_id > @first_mention_id
+  AND t3.post_status = 'posted'
+
 	UNION ALL
+
 	SELECT 
 		'COMMENTED_YOUR_POST' notification_type,
 		t1.author_id recipient_id
@@ -1161,11 +1167,16 @@ FROM (
 	LEFT JOIN tbl_post_comment_mentions t3
 		ON t3.mention_id > @first_mention_id
 		AND t1.author_id = t3.user_id
+  JOIN tbl_post t4
+    ON t4.post_id = @post_id
 	WHERE @parent_comment_id IS NULL 
 	AND t1.post_id = @post_id
 	AND t2.post_id IS NULL
 	AND t3.user_id IS NULL
+  AND t4.post_status = 'posted'
+
 	UNION ALL
+
 	SELECT
 		'COMMENTED_ON_A_POST_THAT_YOU_ARE_TAGGED' notification_type,
 		t1.user_id recipient_id
@@ -1175,11 +1186,16 @@ FROM (
 	LEFT JOIN tbl_post_comment_mentions t3
 		ON t3.mention_id > @first_mention_id
 		AND t1.user_id = t3.user_id
+  JOIN tbl_post t4
+    ON t4.post_id = @post_id
 	WHERE @parent_comment_id IS NULL
 	AND t1.post_id = @post_id
 	AND t2.post_id IS NULL
 	AND t3.user_id IS NULL
+  AND t4.post_status = 'posted'
+
 	UNION ALL
+
 	SELECT 
 		'REPLIED_YOUR_COMMENT' notification_type,
 		t1.author_id recipient_id
@@ -1189,10 +1205,13 @@ FROM (
 	LEFT JOIN tbl_post_comment_mentions t3
 		ON t3.mention_id > @first_mention_id
 		AND t3.user_id = t1.author_id
+  JOIN tbl_post t4
 	WHERE @parent_comment_id IS NOT NULL
 	AND t1.comment_id = @parent_comment_id
 	AND t2.comment_id IS NULL
 	AND t3.user_id IS NULL
+  AND t4.post_status = 'posted'
+
 ) tu
 JOIN tbl_users_profile t1
 	ON t1.user_id = @user_id;
