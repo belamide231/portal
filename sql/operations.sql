@@ -1149,12 +1149,12 @@ FROM (
 		ON t1.user_id = t2.user_id
 		AND t2.post_id = @post_id
 		AND t2.comment_id = @comment_id
-  JOIN tbl_post t3
-    ON t3.post_id = @post_id
+	JOIN tbl_post t3
+		ON t3.post_id = @post_id
 	WHERE t2.post_id IS NULL
 	AND t2.comment_id IS NULL
 	AND t1.mention_id > @first_mention_id
-  AND t3.post_status = 'posted'
+	AND t3.post_status = 'posted'
 
 	UNION ALL
 
@@ -1167,13 +1167,13 @@ FROM (
 	LEFT JOIN tbl_post_comment_mentions t3
 		ON t3.mention_id > @first_mention_id
 		AND t1.author_id = t3.user_id
-  JOIN tbl_post t4
-    ON t4.post_id = @post_id
+	JOIN tbl_post t4
+		ON t4.post_id = @post_id
 	WHERE @parent_comment_id IS NULL 
 	AND t1.post_id = @post_id
 	AND t2.post_id IS NULL
 	AND t3.user_id IS NULL
-  AND t4.post_status = 'posted'
+	AND t4.post_status = 'posted'
 
 	UNION ALL
 
@@ -1186,13 +1186,13 @@ FROM (
 	LEFT JOIN tbl_post_comment_mentions t3
 		ON t3.mention_id > @first_mention_id
 		AND t1.user_id = t3.user_id
-  JOIN tbl_post t4
-    ON t4.post_id = @post_id
+	JOIN tbl_post t4
+		ON t4.post_id = @post_id
 	WHERE @parent_comment_id IS NULL
 	AND t1.post_id = @post_id
 	AND t2.post_id IS NULL
 	AND t3.user_id IS NULL
-  AND t4.post_status = 'posted'
+	AND t4.post_status = 'posted'
 
 	UNION ALL
 
@@ -1205,12 +1205,13 @@ FROM (
 	LEFT JOIN tbl_post_comment_mentions t3
 		ON t3.mention_id > @first_mention_id
 		AND t3.user_id = t1.author_id
-  JOIN tbl_post t4
+	JOIN tbl_post t4
+		ON t4.post_id = @post_id
 	WHERE @parent_comment_id IS NOT NULL
 	AND t1.comment_id = @parent_comment_id
 	AND t2.comment_id IS NULL
 	AND t3.user_id IS NULL
-  AND t4.post_status = 'posted'
+	AND t4.post_status = 'posted'
 
 ) tu
 JOIN tbl_users_profile t1
