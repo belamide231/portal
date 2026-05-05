@@ -1213,6 +1213,24 @@ FROM (
 	AND t3.user_id IS NULL
 	AND t4.post_status = 'posted'
 
+	SELECT
+		'REQUESTED_COMMENT_APPROVAL' notification_type,
+		t1.member_id recipient_id
+	FROM tbl_group_members t1
+	LEFT JOIN tbl_users_notification_mutes t2
+		ON t1.member_id = t2.user_id
+		AND (
+			OR t2.group_id = @group_id
+			OR t2.post_id = @post_id
+			OR t2.comment_id = @comment_id
+		)
+	JOIN tbl_post t3
+		t3.post_id = @post_id
+	WHERE @group_id IS NOT NULL
+	AND t1.group_id = @group_id
+	AND t2.user_id IS NULL
+	AND t3.post_status = 'pending'
+	
 ) tu
 JOIN tbl_users_profile t1
 	ON t1.user_id = @user_id;
