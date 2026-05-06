@@ -962,19 +962,27 @@ SELECT
     @group_id group_id,
     @post_id post_id
 FROM (
-    SELECT
-        t1.member_id user_id
-    FROM tbl_group_members t1
-    JOIN tbl_posts t2
-        ON t2.post_id = @post_id
-    WHERE (@group_id IS NOT NULL AND t1.group_id = @group_id)
-    AND t1.member_id != @user_id
+
+	SELECT
+		t1.member_id user_id
+	FROM tbl_group_members t1
+	JOIN tbl_posts t2
+		ON t2.post_id = @post_id
+	LEFT JOIN tbl_users_notification_mutes t3
+		ON t1.member_id = t3.user_id
+		AND t3.group_id = @group_id
+	WHERE @group_id IS NOT NULL
+	AND t3.group_id IS NULL
+	AND t1.group_id = @group_id
+	AND t1.member_id != @user_id
     AND (
         (t1.is_group_moderator = TRUE AND t2.post_status = 'pending') 
         OR
         (t2.is_important = TRUE AND t2.post_status = 'posted')
     )
+
     UNION ALL
+
     SELECT
         t1.user_id
     FROM tbl_users_account t1
@@ -987,6 +995,7 @@ FROM (
         OR
         (t2.is_important = TRUE AND t2.post_status = 'posted')
     )
+
 ) mt
 LEFT JOIN tbl_users_profile t1
     ON t1.user_id = @user_id
@@ -995,7 +1004,9 @@ LEFT JOIN tbl_groups t2
 JOIN tbl_posts t3
     ON t3.post_id = @post_id;
 
-SET @starting_notification_id = (LAST_INSERT_ID() - ROW_COUNT());
+SET @row_count = ROW_COUNT();
+SET @last_notification_id = IFNULL((SELECT MAX(notification_id) FROM tbl_users_notification), 0);
+SET @starting_notification_id = @lastnotification_id - @row_count;
 
 SELECT 
     t1.notification_id, 
@@ -1047,16 +1058,22 @@ COMMIT;
 START TRANSACTION;
 
 SELECT t1.group_id, t2.username, t1.is_group_moderator, t1.group_role FROM tbl_group_members t1 JOIN tbl_users_account t2 ON t1.member_id = t2.user_id;
+
 -- PARAMETERS [15]
 SET @group_id = NULL;
 SET @post_id = 2;
 SET @parent_comment_id = 3;
 SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6');
 SET @comment_text = 'child-comment!';
-SET @mentioned_users_id = 'cf1099b6-471d-11f1-9a32-37b9fcc3dc05 cf109f4c-471d-11f1-9a32-37b9fcc3dc05 cf10a0d2-471d-11f1-9a32-37b9fcc3dc05';
+SET @mentioned_users_id = CONCAT(
+	(SELECT user_id FROM tbl_users_account WHERE username = 'student1'), ' ',
+	(SELECT user_id FROM tbl_users_account WHERE username = 'student2'), ' ',
+	(SELECT user_id FROM tbl_users_account WHERE username = 'student3'), ' ',
+	(SELECT user_id FROM tbl_users_account WHERE username = 'student4'), ' ',
+	(SELECT user_id FROM tbl_users_account WHERE username = 'student5'), ' '
+);
 
 -- SQL [15]
--- wapa mahoman
 INSERT INTO tbl_post_comments(parent_comment_id, post_id, group_id, author_id, comment_text, comment_status)
 SELECT
 	@parent_comment_id parent_comment_id,
@@ -1086,10 +1103,10 @@ WHERE t1.user_id = @user_id;
 
 SET @comment_id = LAST_INSERT_ID();
 
-INSERT INTO tbl_post_comment_mentions(comment_id, user_id)
+INSERT INTO tbl_post_comment_mentions(user_id, comment_id)
 SELECT
-	@comment_id comment_id,
-	t1.user_id user_id
+	t1.user_id user_id,
+	@comment_id comment_id
 FROM (
 	WITH RECURSIVE recursion AS (
 		SELECT 
@@ -1111,15 +1128,12 @@ FROM (
 		AND t2.comment_id = @comment_id
 	WHERE t2.post_id IS NULL
 	AND t2.comment_id IS NULL
-) t1
-LEFT JOIN tbl_users_notification_mutes t2
-	ON t1.user_id = t2.user_id
-	AND t2.post_id = @post_id
-	AND t2.comment_id = @comment_id
-WHERE t2.post_id IS NULL
-AND t2.comment_id IS NULL;
+	AND @mentioned_users_id != ''
+) t1;
 
-SET @first_mention_id = (LAST_INSERT_ID() - ROW_COUNT());
+SET @row_count = ROW_COUNT();
+SET @last_mention_id = IFNULL((SELECT MAX(mention_id) FROM tbl_post_comment_mentions), 0);
+SET @first_mention_id = @last_mention_id - @row_count;
 
 INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_type, notification_text, target_url, group_id, post_id, comment_id)
 SELECT
@@ -1151,7 +1165,7 @@ FROM (
 		ON t1.user_id = t2.user_id
 		AND t2.post_id = @post_id
 		AND t2.comment_id = @comment_id
-	JOIN tbl_post t3
+	JOIN tbl_posts t3
 		ON t3.post_id = @post_id
 	WHERE t2.post_id IS NULL
 	AND t2.comment_id IS NULL
@@ -1169,7 +1183,7 @@ FROM (
 	LEFT JOIN tbl_post_comment_mentions t3
 		ON t3.mention_id > @first_mention_id
 		AND t1.author_id = t3.user_id
-	JOIN tbl_post t4
+	JOIN tbl_posts t4
 		ON t4.post_id = @post_id
 	WHERE @parent_comment_id IS NULL 
 	AND t1.post_id = @post_id
@@ -1188,7 +1202,7 @@ FROM (
 	LEFT JOIN tbl_post_comment_mentions t3
 		ON t3.mention_id > @first_mention_id
 		AND t1.user_id = t3.user_id
-	JOIN tbl_post t4
+	JOIN tbl_posts t4
 		ON t4.post_id = @post_id
 	WHERE @parent_comment_id IS NULL
 	AND t1.post_id = @post_id
@@ -1207,13 +1221,14 @@ FROM (
 	LEFT JOIN tbl_post_comment_mentions t3
 		ON t3.mention_id > @first_mention_id
 		AND t3.user_id = t1.author_id
-	JOIN tbl_post t4
+	JOIN tbl_posts t4
 		ON t4.post_id = @post_id
 	WHERE @parent_comment_id IS NOT NULL
 	AND t1.comment_id = @parent_comment_id
 	AND t2.comment_id IS NULL
 	AND t3.user_id IS NULL
 	AND t4.post_status = 'posted'
+	AND t4.author_id != @user_id
 
 	UNION ALL
 
@@ -1221,11 +1236,11 @@ FROM (
 		'REQUESTED_COMMENT_APPROVAL_IN_GROUP' notification_type,
 		t1.member_id recipient_id
 	FROM tbl_group_members t1
-	JOIN tbl_post t2
-		t2.post_id = @post_id
+	JOIN tbl_posts t2
+		ON t2.post_id = @post_id
 	WHERE @group_id IS NOT NULL
 	AND t1.group_id = @group_id
-	AND t2.is_group_moderator IS TRUE
+	AND t1.is_group_moderator IS TRUE
 	AND t2.post_status = 'pending'
 
 	UNION ALL
@@ -1234,8 +1249,8 @@ FROM (
 		'REQUEST_COMMENT_APPROVAL' notification_type,
 		t1.user_id recipient_id
 	FROM tbl_users_account t1 
-	JOIN tbl_post t2
-		t2.post_id = @post_id
+	JOIN tbl_posts t2
+		ON t2.post_id = @post_id
 	WHERE @group_id IS NULL
 	AND t1.is_moderator IS TRUE
 	AND t2.post_status = 'pending'
@@ -1244,9 +1259,13 @@ FROM (
 JOIN tbl_users_profile t1
 	ON t1.user_id = @user_id
 LEFT JOIN tbl_groups t2
-	ON t2.group_id = @group_id;
+	ON t2.group_id = @group_id
+JOIN tbl_users_account t3
+	ON t3.user_id = tu.recipient_id;
 
-SET @starting_notification_id = (LAST_INSERT_ID() - ROW_COUNT());
+SET @row_count = ROW_COUNT();
+SET @last_notification_id = IFNULL((SELECT MAX(notification_id) FROM tbl_users_notification), 0);
+SET @starting_notification_id = @last_notification_id - @row_count;
 
 SELECT 
 	t1.notification_id, 
@@ -1254,4 +1273,4 @@ SELECT
 FROM tbl_users_notification t1
 JOIN tbl_users_connection t2
 	ON t1.recipient_id = t2.user_id
-WHERE t1.notification_id >= @starting_notification_id;
+WHERE t1.notification_id > @starting_notification_id;
