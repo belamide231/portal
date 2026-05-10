@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS tbl_group_members (
 	is_group_moderator BOOLEAN NOT NULL DEFAULT FALSE
 ) ENGINE = Innodb;
 
-/* ADDING INDEX EACH TABLE'S COLUMN */
+/* CURRENT LINE */
 
 DROP TABLE IF EXISTS tbl_group_membership_requests;
 CREATE TABLE IF NOT EXISTS tbl_group_membership_requests (

@@ -888,11 +888,11 @@ DESCRIBE tbl_posts;
 DESCRIBE tbl_users_notification;
 
 SELECT * FROM tbl_posts;
-SELECT * FROM tbl_users_notification t1 JOIN tbl_users_account t2 ON t1.recipient_id = t2.user_id;
+SELECT * FROM tbl_users_notification;
 SELECT * FROM tbl_users_account;
 SELECT * FROM tbl_portal_policy;
-SELECT * FROM tbl_groups;
-SELECT t2.username, t1.is_group_moderator FROM tbl_group_members t1 JOIN tbl_users_account t2 ON t1.member_id = t2.user_id;
+SELECT * FROM tbl_group_members;
+
 
 DELETE FROM tbl_users_notification;
 DELETE FROM tbl_posts;
@@ -902,10 +902,10 @@ COMMIT;
 START TRANSACTION;
 
 -- PARAMETERS [14]
-SET @group_id = NULL;
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6');
+SET @group_id = 1;
+SET @user_id = (SELECT member_id FROM tbl_group_members WHERE group_role = 'group_member' AND is_group_moderator = TRUE LIMIT 1);
 SET @post_text = '';
-SET @is_important = TRUE;
+SET @is_important = FALSE;
 
 -- SQL [14]
 INSERT INTO tbl_posts(group_id, author_id, post_text, is_important, post_status)
@@ -944,16 +944,12 @@ SELECT
     @user_id sender_id,
     mt.user_id recipient_id,
     CASE 
-        WHEN @group_id IS NOT NULL AND t3.post_status = 'pending' THEN CONCAT(t1.full_name, ' requested a post approval in ', t2.group_type, ' ', t2.group_name)
-        WHEN @group_id IS NOT NULL AND t3.post_status = 'posted' THEN CONCAT(t1.full_name, ' posted a post in ', t2.group_type, ' ', t2.group_name)
-        WHEN @group_id IS NULL AND t3.post_status = 'pending' THEN CONCAT(t1.full_name, ' requested a post approval')
-        WHEN @group_id IS NULL AND t3.post_status = 'posted' THEN CONCAT(t1.full_name, ' posted a post')
+        WHEN @group_id IS NOT NULL THEN CONCAT(t1.full_name, ' requested a post approval in ', t2.group_type, ' ', t2.group_name)
+        ELSE CONCAT(t1.full_name, ' requested a post approval')
     END notification_text,
     CASE 
-        WHEN @group_id IS NOT NULL AND t3.post_status = 'pending' THEN 'REQUESTED_GROUP_POST_APPROVAL'
-        WHEN @group_id IS NOT NULL AND t3.post_status = 'posted' THEN 'POSTED_A_POST'
-        WHEN @group_id IS NULL AND t3.post_status = 'pending' THEN 'REQUESTED_POST_APPROVAL'
-        WHEN @group_id IS NULL AND t3.post_status = 'posted' THEN 'POSTED_A_POST'
+        WHEN @group_id IS NOT NULL THEN 'REQUEST_GROUP_POST_APPROVAL'
+        ELSE 'REQUEST_POST_APPROVAL'
     END notification_type,
     CASE 
         WHEN @group_id IS NOT NULL THEN CONCAT('group/', @group_id , '/post/', @post_id)
@@ -963,43 +959,32 @@ SELECT
     @post_id post_id
 FROM (
     SELECT
-        t1.member_id user_id
-    FROM tbl_group_members t1
-    JOIN tbl_posts t2
-        ON t2.post_id = @post_id
-    WHERE (@group_id IS NOT NULL AND t1.group_id = @group_id)
-    AND t1.member_id != @user_id
-    AND (
-        (t1.is_group_moderator = TRUE AND t2.post_status = 'pending') 
-        OR
-        (t2.is_important = TRUE AND t2.post_status = 'posted')
-    )
+        member_id user_id
+    FROM tbl_group_members
+    WHERE (@group_id IS NOT NULL AND group_id = @group_id)
+    AND member_id != @user_id
     UNION ALL
     SELECT
-        t1.user_id
-    FROM tbl_users_account t1
-    JOIN tbl_posts t2
-        ON t2.post_id = @post_id
+        user_id
+    FROM tbl_users_account
     WHERE @group_id IS NULL
-    AND t1.user_id != @user_id
-    AND (
-        (t1.is_moderator = TRUE AND t2.post_status = 'pending')
-        OR
-        (t2.is_important = TRUE AND t2.post_status = 'posted')
-    )
+    AND user_id != @user_id
+    AND is_moderator = TRUE
 ) mt
 LEFT JOIN tbl_users_profile t1
     ON t1.user_id = @user_id
 LEFT JOIN tbl_groups t2
     ON t2.group_id = @group_id
 JOIN tbl_posts t3
-    ON t3.post_id = @post_id;
+    ON t3.post_id = @post_id
+WHERE t3.post_status = 'pending';
 
 SET @starting_notification_id = LAST_INSERT_ID() - ROW_COUNT();
 
 SELECT 
     t1.notification_id, 
     t2.connection_id
+    , (SELECT username FROM tbl_users_account WHERE user_id = t1.recipient_id)
 FROM tbl_users_notification t1
 JOIN tbl_users_connection t2
     ON t1.recipient_id = t2.user_id
