@@ -114,10 +114,10 @@ SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'admin' L
 -- SQL [2]
 INSERT INTO tbl_group_membership_requests(group_id, candidate_id, referrer_id, origin)
 SELECT
-	group_id 									group_id, 
-	candidate_id							candidate_id, 
-	@user_id 									referrer_id, 
-	origin										origin
+	group_id group_id, 
+	candidate_id candidate_id, 
+	@user_id referrer_id, 
+	origin origin
 FROM (
 	WITH RECURSIVE recursion AS (
 	    SELECT 
@@ -901,13 +901,21 @@ ROLLBACK;
 COMMIT;
 START TRANSACTION;
 
+SELECT t1.username, t2.is_group_moderator FROM tbl_users_account t1 JOIN tbl_group_members t2 ON t1.user_id = t2.member_id WHERE t2.group_id = 1;
+
 -- PARAMETERS [14]
-SET @group_id = NULL;
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6');
-SET @post_text = 'More practice problems for the midterm exam, please!';
+SET @group_id = 1;
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student10');
+SET @post_text = 'Not pending!';
 SET @is_important = TRUE;
+SET @tagged_users_id = CONCAT(
+	(SELECT user_id FROM tbl_users_account WHERE username = 'student2'), ' ',
+	(SELECT user_id FROM tbl_users_account WHERE username = 'student6'), ' '
+);
 
 -- SQL [14]
+SET @last_notification_id = IFNULL((SELECT MAX(notification_id) FROM tbl_users_notification), 0);
+
 INSERT INTO tbl_posts(group_id, author_id, post_text, is_important, post_status)
 SELECT
 	@group_id group_id,
@@ -939,74 +947,181 @@ WHERE t1.policy_id = 1;
 
 SET @post_id = LAST_INSERT_ID();
 
+INSERT INTO tbl_post_tags(post_id, user_id)
+WITH RECURSIVE recursion AS (
+	SELECT 
+		TRIM(REGEXP_REPLACE(CONVERT(@tagged_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')) AS remaining, 
+		SUBSTRING_INDEX(TRIM(REGEXP_REPLACE(CONVERT(@tagged_users_id USING utf8mb4), '[^a-zA-Z0-9\-]+', ' ')), ' ', 1) AS element
+	UNION ALL
+	SELECT
+		TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), 
+		SUBSTRING_INDEX(TRIM(SUBSTRING(remaining, CHAR_LENGTH(element) + 1)), ' ', 1)
+	FROM recursion
+	WHERE remaining != element AND remaining != ''
+)
+SELECT
+	@post_id post_id,
+	element AS user_idz
+FROM recursion t1;
+
+-- creating post in group, pending -> notifying group moderators
 INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, group_id, post_id)
 SELECT 
-    @user_id sender_id,
-    mt.user_id recipient_id,
-    CASE 
-        WHEN @group_id IS NOT NULL AND t3.post_status = 'pending' THEN CONCAT(t1.full_name, ' requested a post approval in ', t2.group_type, ' ', t2.group_name)
-        WHEN @group_id IS NOT NULL AND t3.post_status = 'posted' THEN CONCAT(t1.full_name, ' posted a post in ', t2.group_type, ' ', t2.group_name)
-        WHEN @group_id IS NULL AND t3.post_status = 'pending' THEN CONCAT(t1.full_name, ' requested a post approval')
-        WHEN @group_id IS NULL AND t3.post_status = 'posted' THEN CONCAT(t1.full_name, ' posted a post')
-    END notification_text,
-    CASE 
-        WHEN @group_id IS NOT NULL AND t3.post_status = 'pending' THEN 'REQUESTED_GROUP_POST_APPROVAL'
-        WHEN @group_id IS NOT NULL AND t3.post_status = 'posted' THEN 'POSTED_A_POST'
-        WHEN @group_id IS NULL AND t3.post_status = 'pending' THEN 'REQUESTED_POST_APPROVAL'
-        WHEN @group_id IS NULL AND t3.post_status = 'posted' THEN 'POSTED_A_POST'
-    END notification_type,
-    CASE 
-        WHEN @group_id IS NOT NULL THEN CONCAT('group/', @group_id , '/post/', @post_id)
-        ELSE CONCAT('post/', @post_id)
-    END target_url,
-    @group_id group_id,
-    @post_id post_id
-FROM (
+	@user_id sender_id,
+	t1.member_id recipient_id,
+	CONCAT(t3.full_name, ' requested a post approval in ', t4.group_type, ' ', t4.group_name) notification_text,
+	'REQUESTED_GROUP_POST_APPROVAL' notification_type,
+	CONCAT('group/', @group_id , '/post/', @post_id) target_url,
+	@group_id group_id,
+	@post_id post_id
+FROM tbl_group_members t1
+JOIN tbl_posts t2
+	ON t2.post_id = @post_id
+JOIN tbl_users_profile t3
+	ON t3.user_id = @user_id
+JOIN tbl_groups t4
+	ON t4.group_id = @group_id
+WHERE @group_id IS NOT NULL
+AND t1.group_id = @group_id
+AND t2.post_status = 'pending'
+AND t1.is_group_moderator IS TRUE
+AND t1.member_id != @user_id;
 
-	SELECT
-		t1.member_id user_id
-	FROM tbl_group_members t1
-	JOIN tbl_posts t2
-		ON t2.post_id = @post_id
-	LEFT JOIN tbl_users_notification_mutes t3
-		ON t1.member_id = t3.user_id
-		AND t3.group_id = @group_id
-	WHERE @group_id IS NOT NULL
-	AND t3.group_id IS NULL
-	AND t1.group_id = @group_id
-	AND t1.member_id != @user_id
-    AND (
-        (t1.is_group_moderator = TRUE AND t2.post_status = 'pending') 
-        OR
-        (t2.is_important = TRUE AND t2.post_status = 'posted')
-    )
+-- creating post in group, posted -> notifying members if it is important except tagged users except users that are muting the group
+INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, group_id, post_id)
+SELECT
+	@user_id sender_id,
+	t1.member_id recipient_id,
+	CONCAT(t3.full_name, ' posted a post in ', t4.group_type, ' ', t4.group_name) notification_text,
+	'POSTED_A_POST' notification_type,
+	CONCAT('group/', @group_id , '/post/', @post_id) target_url,
+	@group_id group_id,
+	@post_id post_id
+FROM tbl_group_members t1
+JOIN tbl_posts t2
+	ON t2.post_id = @post_id
+JOIN tbl_users_profile t3
+	ON t3.user_id = @user_id
+JOIN tbl_groups t4
+	ON t4.group_id = @group_id
+JOIN tbl_post_tags t5
+	ON t5.post_id = @post_id
+JOIN tbl_users_notification_mutes t6
+	ON t6.user_id = t1.member_id
+	AND t6.group_id = @group_id
+WHERE @group_id IS NOT NULL
+AND t1.group_id = @group_id
+AND t2.post_status = 'posted'
+AND t2.is_important IS TRUE
+AND t1.member_id != @user_id
+AND t1.member_id != t5.user_id
+AND t6.group_id IS NULL;
 
-    UNION ALL
+-- creating post in portal, pending -> notifying portal moderators
+INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, post_id)
+SELECT
+	@user_id sender_id,
+	t1.user_id recipient_id,
+	CONCAT(t3.full_name, ' requested a post approval') notification_text,
+	'REQUESTED_POST_APPROVAL' notification_type,
+	CONCAT('post/', @post_id) target_url,
+	@post_id post_id
+FROM tbl_users_account t1
+JOIN tbl_posts t2
+	ON t2.post_id = @post_id
+JOIN tbl_users_profile t3
+	ON t3.user_id = @user_id
+WHERE @group_id IS NULL
+AND t2.post_status = 'pending'
+AND t1.user_id != @user_id
+AND t1.is_moderator IS TRUE;
 
-    SELECT
-        t1.user_id
-    FROM tbl_users_account t1
-    JOIN tbl_posts t2
-        ON t2.post_id = @post_id
-    WHERE @group_id IS NULL
-    AND t1.user_id != @user_id
-    AND (
-        (t1.is_moderator = TRUE AND t2.post_status = 'pending')
-        OR
-        (t2.is_important = TRUE AND t2.post_status = 'posted')
-    )
+-- creating post in portal, posted -> notifying users if it is important except tagged users
+INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, post_id)
+SELECT
+	@user_id sender_id,
+	t1.user_id recipient_id,
+	CONCAT(t3.full_name, ' posted a post') notification_text,
+	'POSTED_A_POST' notification_type,
+	CONCAT('post/', @post_id) target_url,
+	@post_id post_id
+FROM tbl_users_account t1
+JOIN tbl_posts t2
+	ON t2.post_id = @post_id
+JOIN tbl_users_profile t3
+	ON t3.user_id = @user_id
+JOIN tbl_post_tags t4
+	ON t4.post_id = @post_id
+JOIN tbl_post_tags t5
+	ON t5.post_id = @post_id
+WHERE @group_id IS NULL
+AND t2.post_status = 'posted'
+AND t2.is_important IS TRUE
+AND t1.user_id != @user_id
+AND t5.user_id != t1.user_id;
 
-) mt
-LEFT JOIN tbl_users_profile t1
-    ON t1.user_id = @user_id
+-- creating post in portal, notifying tagged users in posted status except users that are muting the group
+INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, group_id, post_id)
+SELECT
+	@user_id sender_id,
+	t1.user_id recipient_id,
+	CASE 
+		WHEN @group_id IS NULL THEN CONCAT(t3.full_name, ' tagged you in a post')
+		ELSE  CONCAT(t3.full_name, ' tagged you in a post in ', t4.group_type, ' ', t4.group_name)
+	END notification_text,
+	CASE 
+		WHEN @group_id IS NULL THEN 'POST_TAGGED_YOU'
+		ELSE 'TAGGED_YOU_IN_A_POST_IN_GROUP'
+	END notification_type,
+	CASE 
+		WHEN @group_id IS NULL THEN CONCAT('post/', @post_id)
+		ELSE CONCAT('group/', @group_id , '/post/', @post_id)
+	END target_url,
+	@group_id group_id,
+	@post_id post_id
+FROM tbl_post_tags t1
+JOIN tbl_posts t2
+	ON t2.post_id = t1.post_id
+JOIN tbl_users_profile t3
+	ON t3.user_id = @user_id
+LEFT JOIN tbl_groups t4
+	ON t4.group_id = t2.group_id
+LEFT JOIN tbl_users_notification_mutes t5
+	ON t5.user_id = t1.user_id
+	AND t5.group_id = @group_id
+WHERE t2.post_status = 'posted' 
+AND t1.post_id = @post_id
+AND t1.user_id != @user_id
+AND t5.group_id IS NULL;
+
+-- notifying self that post is created in portal, pending -> notifying self, posted -> notifying self, group or not
+INSERT INTO tbl_users_notification(sender_id, recipient_id, notification_text, notification_type, target_url, group_id, post_id)
+SELECT
+	@user_id sender_id,
+	@user_id recipient_id,
+	CASE 
+		WHEN @group_id IS NOT NULL AND t1.post_status = 'pending' THEN CONCAT('you requested a post approval in ', t2.group_type, ' ', t2.group_name)
+		WHEN @group_id IS NOT NULL AND t1.post_status = 'posted' THEN CONCAT('you posted a post in ', t2.group_type, ' ', t2.group_name)
+		WHEN @group_id IS NULL AND t1.post_status = 'pending' THEN 'you requested a post approval'
+		WHEN @group_id IS NULL AND t1.post_status = 'posted' THEN 'you posted a post'
+	END notification_text,
+	CASE
+		WHEN @group_id IS NOT NULL AND t1.post_status = 'pending' THEN 'REQUESTED_GROUP_POST_APPROVAL'
+		WHEN @group_id IS NOT NULL AND t1.post_status = 'posted' THEN 'YOU_POSTED_A_POST_IN_GROUP'
+		WHEN @group_id IS NULL AND t1.post_status = 'pending' THEN 'REQUESTED_POST_APPROVAL'
+		WHEN @group_id IS NULL AND t1.post_status = 'posted' THEN 'POSTED_A_POST'
+	END notification_type,
+	CASE 
+		WHEN @group_id IS NOT NULL THEN CONCAT('group/', @group_id , '/post/', @post_id)
+		ELSE CONCAT('post/', @post_id)
+	END target_url,
+	@group_id group_id,
+	@post_id post_id
+FROM tbl_posts t1
 LEFT JOIN tbl_groups t2
-    ON t2.group_id = @group_id
-JOIN tbl_posts t3
-    ON t3.post_id = @post_id;
-
-SET @row_count = ROW_COUNT();
-SET @last_notification_id = IFNULL((SELECT MAX(notification_id) FROM tbl_users_notification), 0);
-SET @starting_notification_id = @lastnotification_id - @row_count;
+	ON t2.group_id = t1.group_id
+WHERE t1.post_id = @post_id
+AND t1.author_id = @user_id;
 
 SELECT 
     t1.notification_id, 
@@ -1014,7 +1129,7 @@ SELECT
 FROM tbl_users_notification t1
 JOIN tbl_users_connection t2
     ON t1.recipient_id = t2.user_id
-WHERE t1.notification_id > @starting_notification_id;
+WHERE t1.notification_id > @last_notification_id;
 
 /******************************************************************************************/
 /******************************************************************************************/
@@ -1063,7 +1178,7 @@ SELECT t1.group_id, t2.username, t1.is_group_moderator, t1.group_role FROM tbl_g
 SET @group_id = NULL;
 SET @post_id = 2;
 SET @parent_comment_id = 3;
-SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student6');
+SET @user_id = (SELECT user_id FROM tbl_users_account WHERE username = 'student1');
 SET @comment_text = 'child-comment!';
 SET @mentioned_users_id = CONCAT(
 	(SELECT user_id FROM tbl_users_account WHERE username = 'student1'), ' ',
@@ -1274,3 +1389,33 @@ FROM tbl_users_notification t1
 JOIN tbl_users_connection t2
 	ON t1.recipient_id = t2.user_id
 WHERE t1.notification_id > @starting_notification_id;
+
+/******************************************************************************************/
+/******************************************************************************************/
+/******************************************************************************************/
+/******************************************************************************************/
+/******************************************************************************************/
+/******************************************************************************************/
+/******************************************************************************************/
+/* NO: [16]
+ * APPROVING_POST
+ * When an admin/instructor/author approves a post.
+ * moderator/author/admin's perspective. *clicks notification* navigates: 'group/:
+ * */
+
+DESCRIBE tbl_posts;
+DESCRIBE tbl_users_notification;
+
+SELECT * FROM tbl_posts;
+SELECT * FROM tbl_users_notification t1 JOIN tbl_users_account t2 ON t1.recipient;
+
+-- PARAMETERS [16]
+SET @post_id = 5;
+
+-- SQL [16]
+UPDATE tbl_posts
+SET post_status = 'posted'
+WHERE post_id = @post_id
+AND post_status = 'pending';
+
+SELECT * FROM tbl_post_tags WHERE post_id = @post_id;
