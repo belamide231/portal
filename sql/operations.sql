@@ -1133,7 +1133,7 @@ JOIN tbl_users_connection t2
     ON t1.recipient_id = t2.user_id
 WHERE t1.notification_id > @last_notification_id;
 
->>>>>>> Your Commit (The "Newest" logic)
+>>>>>>> Your Commit (The "newest" logic)
 
 /******************************************************************************************/
 /******************************************************************************************/
@@ -1403,6 +1403,7 @@ WHERE t1.notification_id > @starting_notification_id;
 /******************************************************************************************/
 /* NO: [16]
  * APPROVING_POST
+<<<<<<< HEAD
  * When an admin/instructor/author approves a post.
  * moderator/author/admin's perspective. *clicks notification* navigates: 'group/:
  * */
@@ -1423,3 +1424,10 @@ WHERE post_id = @post_id
 AND post_status = 'pending';
 
 SELECT * FROM tbl_post_tags WHERE post_id = @post_id;
+=======
+ * When an admin/instructor/author/student/member comments a post/replies a comment.
+ * moderator/author/admin's perspective. *clicks notification* navigates: 'group/:groupId'
+ * */
+
+
+>>>>>>> 8350470fb66f6838b21896a266c46566578961b5
