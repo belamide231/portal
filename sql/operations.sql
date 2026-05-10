@@ -871,8 +871,6 @@ JOIN tbl_users_connection t2
 	ON t1.recipient_id = t2.user_id
 WHERE t1.notification_id > @starting_notification_id;
 
-<<<<<<< HEAD (The Remote version)
-=======
 /******************************************************************************************/
 /******************************************************************************************/
 /******************************************************************************************/
@@ -1132,8 +1130,6 @@ FROM tbl_users_notification t1
 JOIN tbl_users_connection t2
     ON t1.recipient_id = t2.user_id
 WHERE t1.notification_id > @last_notification_id;
-
->>>>>>> Your Commit (The "newest" logic)
 
 /******************************************************************************************/
 /******************************************************************************************/
@@ -1403,7 +1399,6 @@ WHERE t1.notification_id > @starting_notification_id;
 /******************************************************************************************/
 /* NO: [16]
  * APPROVING_POST
-<<<<<<< HEAD
  * When an admin/instructor/author approves a post.
  * moderator/author/admin's perspective. *clicks notification* navigates: 'group/:
  * */
@@ -1423,11 +1418,4 @@ SET post_status = 'posted'
 WHERE post_id = @post_id
 AND post_status = 'pending';
 
-SELECT * FROM tbl_post_tags WHERE post_id = @post_id;
-=======
- * When an admin/instructor/author/student/member comments a post/replies a comment.
- * moderator/author/admin's perspective. *clicks notification* navigates: 'group/:groupId'
- * */
-
-
->>>>>>> 8350470fb66f6838b21896a266c46566578961b5
+SELECT * FROM tbl_post_tags WHERE post_id = @post_id;e
