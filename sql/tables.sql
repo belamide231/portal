@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS tbl_groups (
 	group_type ENUM('group', 'class') NOT NULL,
 	join_policy ENUM('open', 'close', 'request_join') NOT NULL DEFAULT 'close',
 	post_policy ENUM('public', 'moderated', 'restricted') DEFAULT 'moderated',
+	comment_policy ENUM('public', 'moderated', 'restricted') DEFAULT 'moderated',
 	author_id VARCHAR(99) NOT NULL,
 		FOREIGN KEY (author_id) REFERENCES tbl_users_account(user_id)
 			ON DELETE CASCADE
@@ -609,9 +610,12 @@ CREATE TABLE IF NOT EXISTS tbl_users_notification (
 		'TAGGED_YOU_IN_POST',
 		'TAGGED_YOU_IN_A_POST_IN_GROUP',
 		'MENTIONED_YOU_IN_COMMENT',
+		'MENTIONED_YOU_IN_COMMENT_IN_GROUP',
 		'COMMENTED_ON_A_POST_THAT_YOU_ARE_TAGGED',
 		'YOU_POSTED_A_POST_IN_GROUP',
-		'YOU_POSTED_A_POST'
+		'YOU_POSTED_A_POST',
+		'REQUESTED_COMMENT_APPROVAL_IN_GROUP',
+		'REQUESTED_COMMENT_APPROVAL'
 	) NOT NULL,
 	target_url VARCHAR(7999) NOT NULL,
 	is_viewed BOOLEAN NOT NULL DEFAULT FALSE,
@@ -675,9 +679,12 @@ ALTER TABLE tbl_users_notification MODIFY COLUMN notification_type ENUM(
 		'TAGGED_YOU_IN_POST',
 		'TAGGED_YOU_IN_A_POST_IN_GROUP',
 		'MENTIONED_YOU_IN_COMMENT',
+		'MENTIONED_YOU_IN_COMMENT_IN_GROUP',
 		'COMMENTED_ON_A_POST_THAT_YOU_ARE_TAGGED',
 		'YOU_POSTED_A_POST_IN_GROUP',
-		'YOU_POSTED_A_POST'
+		'YOU_POSTED_A_POST',
+		'REQUESTED_COMMENT_APPROVAL_IN_GROUP',
+		'REQUESTED_COMMENT_APPROVAL'
 ) NOT NULL;
 
 DROP TABLE IF EXISTS tbl_users_notification_mutes;
